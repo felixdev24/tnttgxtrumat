@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TNTT Loading Animation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #131313;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .loading-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .scarf-stage {
+            position: relative;
+            width: 320px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scarf-item {
+            position: absolute;
+            width: 300px;
+            opacity: 0;
+            transform: translateX(-150%) scale(0.8);
+            filter: drop-shadow(0 0 20px rgba(255, 179, 173, 0.2));
+            animation: glideInOut 12s linear infinite;
+        }
+
+        @keyframes glideInOut {
+            0% {
+                transform: translateX(-150%) scale(0.8);
+                opacity: 0;
+            }
+            2% {
+                opacity: 1;
+            }
+            14% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            18% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            30% {
+                transform: translateX(150%) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(150%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Staggered Timing for 6 scarves over 12s duration */
+        .scarf-1 { animation-delay: 0s; }
+        .scarf-2 { animation-delay: 2s; }
+        .scarf-3 { animation-delay: 4s; }
+        .scarf-4 { animation-delay: 6s; }
+        .scarf-5 { animation-delay: 8s; }
+        .scarf-6 { animation-delay: 10s; }
+
+        .loader-text {
+            color: #ffb3ad; /* primary color from theme */
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            font-size: 1.25rem;
+            animation: pulse 2s ease-in-out infinite;
+            margin-top: 3rem;
+            text-align: center;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .glow-overlay {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 84, 81, 0.15) 0%, rgba(255, 84, 81, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="bg-[#131313]">
+<div class="loading-container">
+<!-- Glowing Red Pulse Effect -->
+<div class="glow-overlay"></div>
+<div class="scarf-stage">
+<!-- Scarf Sequence -->
+<img alt="Khăn Hồng" class="scarf-item scarf-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDseYdJPesZHXSeOfcP75PzdS-kdgaN8ooajuLeQdsBPvCTz_dqZ6ttyk12EpqjcwKv4w5j-JQDxnZmXTQ-7C8ja6DCfSjJYdLDWiIiGBApZym1cPZhKfuUPSf1z_QTOjBLBePzNcGigT32J9g1Ugx9SP3uWAZnNGY9u2QFdktGvhS7pA6Z3wGEBXOoZjX37UeX_xNUXMZoKhJckK3cMpP0dKvynSKdNfHc4xXA-LOPRBpIaPiw32UW4Wgb0q8yiEx2mUp-SWcLZAo"/>
+<img alt="Khăn Vàng" class="scarf-item scarf-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0TooT0Jqk8jU_kNt9DbPZ3DBQ0pXTfnAb4GBBDop6TsPE36jbutm-OR2ZiRyg9bKv8M7R3xiYkdzd0u3DT15aZi-VobvxJ1tvhQAp45L6o5tAERYMUXImuAPEgly34H8DJ-KMpJXPFEuB-zZudKdvdIP1OtF_9jbEdOhnrQWLzBcnaAKTywTYHv0aMP_8BcDxeEc9c8NRaczqErk2R1ExLeTujmxk0sH4rNrT-1w2CqZiQRvweGJxV-JgYuDjE-1dSfTCYuOfq1c"/>
+<img alt="Khăn Xanh Lá" class="scarf-item scarf-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCRBG0XaYQjKhFeQp7OA7TqGzuJ7Sf1gSp9sVjNZ6ISZgp9_dFKS6-HDHSlDiHe6hB2RPxcovZa2QjBff9QXZFQNve02nZefrwu5FwZGNl_WpMm7N08fxBD45R30tHci3jK-ko3rs2PCEKndTnTQO2qGvtQZn2rGyMhYj70KXZ7NOIjI-1kLS0KeSv5fVyA0jljDD4nqQTDZ-PF5h2kmBvdxQxA_Mgx1Ef5xANty7rc86Nits9KjKpbrsQGuItrXBfjQo_SZbws8Q"/>
+<img alt="Khăn Nâu" class="scarf-item scarf-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt_ASuh7tz3cVPKJlUFlgX3EMmIjpb472nDKKIT9O05-VpU7d7oScsKJOP-59z2Kw7g5xeDJKV_p6Ycs0a9VHNCJvtcEwELbXW8NogSsIMTZPyUA9YGBzVQ_C6QgZALFADLTBUtUCKfsw_21MtUBqSdocv_B6114qwHiQz98UFrA9o6TSKbxsviFGAbl-9AOM-Hel4fmugCsHa-zMsMm08YxCezcHoBIqZE-nP7GCVCgI8M4oFA8t8mmq6iwYf6yc_-IH4jMnbURU"/>
+<img alt="Khăn Xanh Biển" class="scarf-item scarf-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_ztjojwtl0u7XjDsacwuaj34d1Fd-Fqk1Cma0WwrXwmyq9CsZQHnxbU3RhBD0KCc_aa6EUMlIeaDfKLQv_itqTVGepI2piht0mrMbljd2Plv6Uh4ijzOYOTY0_2QtTQqFypFTRT4rHN2P-zPBrNGkgpOT1_q4iVZQ7ngdr88_IbbGNv3O-k3_Ak49F8RNJvnvlyS568WDX7vbun03vrj128sxm3FTL7YvlmiMMd3txjqVyEsPzmE4ayfWEd6bmDM2HTnIF-biKck"/>
+<img alt="Khăn Đỏ" class="scarf-item scarf-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6n-QujzD6kquxVHo2pFa9G3x8uuPTNcDQ7aKWCM-IXthnW73f1U3JLJGRdPUr4Z4h_OWRmYpX0Mbg9ow59jB3XdKdK27l4tIt6ltPXyjiDfd3fm_UItmaY5tOtmHw3-wL_BVl195MWRyyS0tRFAvD0i_RW0KIAC-1zyBH6CXUsdhtZhZNq0xWJoP35xUG0DwT1lf_vpH921cz9-XyYEsMsSqYhhyOUeCefQIBAH4asEQNg6k-ffEVtANBeMYor24n2dMe6qNEzpM"/>
+</div>
+<div class="loader-text">ĐANG TẢI...</div>
+</div>
+<!-- Background Decoration from Design System -->
+<div class="absolute inset-0 z-[-1] overflow-hidden opacity-30">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#ff5451]/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#0267b8]/5 rounded-full blur-[120px]"></div>
+</div>
+</body></html>

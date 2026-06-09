@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&amp;family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e1e3e4",
+                    "secondary": "#636037",
+                    "secondary-fixed-dim": "#cdc897",
+                    "outline-variant": "#c2c7ce",
+                    "on-primary-container": "#34536f",
+                    "surface-container-high": "#e7e8e9",
+                    "primary": "#42617d",
+                    "on-tertiary-container": "#a60006",
+                    "on-background": "#191c1d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "inverse-primary": "#aacaea",
+                    "on-surface-variant": "#42474d",
+                    "surface-variant": "#e1e3e4",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#eae4b1",
+                    "on-secondary-container": "#67643b",
+                    "on-tertiary-fixed-variant": "#930005",
+                    "on-primary-fixed-variant": "#294964",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#e7e1ae",
+                    "on-secondary-fixed-variant": "#4b4822",
+                    "tertiary": "#c00008",
+                    "on-primary-fixed": "#001d32",
+                    "primary-fixed": "#cde5ff",
+                    "surface": "#f8f9fa",
+                    "on-secondary-fixed": "#1e1c00",
+                    "tertiary-fixed": "#ffdad5",
+                    "on-surface": "#191c1d",
+                    "on-tertiary-fixed": "#410001",
+                    "surface-bright": "#f8f9fa",
+                    "surface-container": "#edeeef",
+                    "tertiary-container": "#ffb0a5",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb4a9",
+                    "surface-tint": "#42617d",
+                    "inverse-surface": "#2e3132",
+                    "background": "#f8f9fa",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f4f5",
+                    "surface-dim": "#d9dadb",
+                    "primary-fixed-dim": "#aacaea",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#a7c7e7",
+                    "error": "#ba1a1a",
+                    "outline": "#73777e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "container-max": "1200px",
+                    "margin-mobile": "16px",
+                    "stack-lg": "32px",
+                    "gutter": "24px",
+                    "unit": "8px",
+                    "margin-desktop": "40px",
+                    "stack-md": "16px",
+                    "section-gap": "80px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Quicksand"],
+                    "body-md": ["Nunito"],
+                    "body-lg": ["Nunito"],
+                    "display-lg": ["Quicksand"],
+                    "title-md": ["Quicksand"],
+                    "headline-lg-mobile": ["Quicksand"],
+                    "label-bold": ["Quicksand"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .duolingo-button-red {
+            box-shadow: 0 4px 0 #930005;
+        }
+        .duolingo-button-red:active {
+            box-shadow: 0 0 0 #930005;
+            transform: translateY(4px);
+        }
+        .duolingo-button-blue {
+            box-shadow: 0 4px 0 #294964;
+        }
+        .duolingo-button-yellow {
+            box-shadow: 0 4px 0 #636037;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-stack-sm max-w-container-max mx-auto">
+<div class="flex items-center gap-stack-md">
+<img alt="TNTT Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOfWbkT3iScbUyp7znUfPB9J1StynPcnnCZdJFFA4fylt9mq3C8T73AaFdJC98vurELpPDtnGy_lH6BiqwxTSwRupeoP49AA7oZfYvZ3xQsa-soqalmShQMUsmOepEOtstj8rE-hhq1BjAijo7teh1fivs58QmPdOp63otbQPLDqilrYGHrXFOwk1OQY1q63PibhEssBnMCdVYP9GjEM5BoBBbIdLdkepXKnzVhbezdsOSGS8InwcJW73VMwXbSKqB16MfHvjUzDw"/>
+<span class="font-headline-lg text-headline-lg-mobile text-tertiary tracking-tight hidden sm:block">Thiếu Nhi Thánh Thể</span>
+</div>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Trang chủ</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Hoạt động</a>
+<a class="text-primary font-bold border-b-4 border-primary pb-1" href="#">Đố vui</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Truyền thông</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high/50 rounded-xl transition-all">account_circle</button>
+</div>
+</div>
+</header>
+<main class="pt-[100px] pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-screen relative">
+<!-- Gamification Stats Bar -->
+<section class="flex flex-wrap justify-between items-center gap-stack-md mb-stack-lg animate-fade-in">
+<div class="flex gap-stack-md">
+<div class="glass-card px-stack-md py-2 rounded-full flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+<span class="font-label-bold text-primary">1,250</span>
+</div>
+<div class="glass-card px-stack-md py-2 rounded-full flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-label-bold text-primary">5 Ngày</span>
+</div>
+</div>
+<div class="flex gap-2">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center border-2 border-white shadow-sm" title="Huy hiệu Cầu Nguyện">
+<span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center border-2 border-white shadow-sm" title="Huy hiệu Siêng Năng">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center border-2 border-white shadow-sm" title="Huy hiệu Thánh Thể">
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</section>
+<!-- Main Quiz Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Side Mascot (Desktop) -->
+<div class="hidden lg:block lg:col-span-3 sticky top-[120px] text-center">
+<img alt="Mascot TNTT" class="w-48 mx-auto mb-stack-md drop-shadow-xl" data-alt="A cute, friendly 3D cartoon illustration of a young Vietnamese child in a Thiếu Nhi Thánh Thể uniform, smiling brightly and giving a thumbs up. The character is styled in a playful, modern aesthetic with soft rounded shapes and bright primary colors, set against a clean, minimalist studio background with soft global illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEscOiENRgV9Den5rjZNSkrrz92j8HdPncWNpn82WfncZg7-UoxE8HplcOqtO5RwuOxXqaL_o5q_6oDgWmVgsKYZ7MwIeZunDiICmExfY-zDaWmWiFjHOzitUNgRB4J9CmcgS9qTdF7TecwNfxffbTmWQqpI1zeSwAHlMmOIP7jS_gHu4ln2zw9aPQnHcxzBI9381R1BDbC8lD793krYlXihmx4IoM4ZCNQYIrwaozA4vnSuDHVE_b2WXAj_1Z6RRJQr52F6LfS4I"/>
+<div class="glass-card p-stack-md rounded-xl">
+<p class="font-label-bold text-primary mb-1">Anh Huynh Trưởng nói:</p>
+<p class="font-body-md text-on-surface-variant italic">"Cố lên em nhé! Chúa Giê-su đang mỉm cười với em đó!"</p>
+</div>
+</div>
+<!-- Central Quiz Card -->
+<div class="lg:col-span-6 space-y-gutter">
+<!-- Question Card -->
+<div class="glass-card p-stack-lg rounded-xl shadow-lg border-2 border-primary-container relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-2 bg-surface-container-highest">
+<div class="h-full bg-primary w-2/3 transition-all duration-500"></div>
+</div>
+<div class="mt-4 flex justify-between items-center text-primary font-label-bold mb-stack-md">
+<span>Câu hỏi 7/10</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">timer</span> 00:45</span>
+</div>
+<h2 class="font-title-md text-on-surface text-center px-4 py-8">
+                        Ai là người đã dẫn đưa dân Israel ra khỏi Ai Cập và băng qua Biển Đỏ?
+                    </h2>
+</div>
+<!-- Answers Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-stack-md">
+<button class="duolingo-button-blue bg-primary-container hover:bg-primary-container/90 p-stack-lg rounded-xl flex items-center gap-stack-md transition-all group active:scale-95">
+<span class="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center font-headline-lg text-primary text-2xl">A</span>
+<span class="font-title-md text-on-primary-container">Ông Mô-sê</span>
+</button>
+<button class="duolingo-button-yellow bg-secondary-container hover:bg-secondary-container/90 p-stack-lg rounded-xl flex items-center gap-stack-md transition-all group active:scale-95">
+<span class="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center font-headline-lg text-secondary text-2xl">B</span>
+<span class="font-title-md text-on-secondary-container">Ông Áp-ra-ham</span>
+</button>
+<button class="duolingo-button-red bg-tertiary-container hover:bg-tertiary-container/90 p-stack-lg rounded-xl flex items-center gap-stack-md transition-all group active:scale-95">
+<span class="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center font-headline-lg text-tertiary text-2xl">C</span>
+<span class="font-title-md text-on-tertiary-container">Ông Giu-se</span>
+</button>
+<button class="duolingo-button-blue bg-outline-variant hover:bg-outline-variant/90 p-stack-lg rounded-xl flex items-center gap-stack-md transition-all group active:scale-95">
+<span class="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center font-headline-lg text-on-surface-variant text-2xl">D</span>
+<span class="font-title-md text-on-surface-variant">Ông Nô-ê</span>
+</button>
+</div>
+<!-- Navigation -->
+<div class="flex justify-between items-center pt-stack-md">
+<button class="text-primary font-label-bold flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined">arrow_back</span> Bỏ qua
+                    </button>
+<button class="bg-primary text-on-primary px-stack-lg py-stack-md rounded-full font-label-bold shadow-md hover:scale-105 active:scale-95 transition-all">
+                        Kiểm tra đáp án
+                    </button>
+</div>
+</div>
+<!-- Right Sidebar Achievements -->
+<aside class="lg:col-span-3 space-y-gutter">
+<div class="glass-card p-stack-md rounded-xl">
+<h3 class="font-label-bold text-primary mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined">emoji_events</span> Bảng Xếp Hạng
+                    </h3>
+<div class="space-y-stack-sm">
+<div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded-lg">
+<div class="flex items-center gap-2">
+<span class="w-6 text-tertiary font-bold">1</span>
+<span class="font-body-md">Maria Lan</span>
+</div>
+<span class="font-label-bold">2,400</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-primary-container/20 rounded-lg border border-primary/20">
+<div class="flex items-center gap-2">
+<span class="w-6 text-on-surface-variant font-bold">7</span>
+<span class="font-body-md font-bold">Bạn (Me)</span>
+</div>
+<span class="font-label-bold">1,250</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded-lg">
+<div class="flex items-center gap-2">
+<span class="w-6 text-on-surface-variant font-bold">3</span>
+<span class="font-body-md">Phê-rô Nam</span>
+</div>
+<span class="font-label-bold">1,950</span>
+</div>
+</div>
+<button class="w-full mt-stack-md text-sm text-primary font-label-bold hover:underline">Xem tất cả</button>
+</div>
+<div class="glass-card p-stack-md rounded-xl bg-gradient-to-br from-tertiary-fixed to-white border-none shadow-sm">
+<div class="flex items-start gap-stack-sm">
+<div class="bg-white p-2 rounded-xl shadow-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">ads_click</span>
+</div>
+<div>
+<p class="font-label-bold text-on-tertiary-fixed">Nhiệm vụ hằng ngày</p>
+<p class="text-xs text-on-tertiary-fixed-variant mb-2">Trả lời 5 câu hỏi đúng liên tiếp</p>
+<div class="w-full h-1.5 bg-white/50 rounded-full">
+<div class="w-3/5 h-full bg-tertiary rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Mobile Mascot -->
+<div class="lg:hidden fixed bottom-24 right-4 z-40">
+<div class="relative">
+<div class="absolute -top-10 -left-20 bg-white p-2 rounded-lg shadow-lg text-xs font-bold text-primary animate-bounce border border-primary-container">
+                    Cố lên bạn ơi! ✨
+                </div>
+<img alt="Small Mascot" class="w-16 h-16 rounded-full border-4 border-white shadow-xl" data-alt="Close-up portrait of a friendly cartoon 3D youth character in a light mode setting. The character features bright eyes and a wide smile, reflecting a joy-filled, spiritual movement. High-quality render with soft lighting and pastel accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoTk97GTKrFthPNiHUgFDL3v2MURsfEm_QB75h2-E49vLJEG8tZ3S2h5r4wajqSNmi7sBfUyqEUcYOWnJkIOaDtwOdrcJlUSRedw3YB180w-AAnaBHp8qJBv0qCBYzNDt-VQbzb5JCCn75_gMoMIgEXWJKEPLyz4J41Iw1FKZRlg5O8tLK76WTsN5GwcgUlLLlJ1XDK7oYNRlxW8s_637zbePlFDwdsqz4CgFtraS3bj9z1O8PT6yvAwtAyG5oTrUOJceqKs4le7o"/>
+</div>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full rounded-t-lg bg-surface-container mt-section-gap">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto gap-gutter">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-lg text-tertiary mb-2">Thiếu Nhi Thánh Thể Việt Nam</span>
+<p class="text-on-surface-variant font-body-md text-center md:text-left max-w-md">© 2024 Thiếu Nhi Thánh Thể Việt Nam. Không biết làm thì bắt đầu từ những điều nhỏ nhất.</p>
+</div>
+<div class="flex gap-gutter">
+<a class="text-on-surface-variant hover:text-tertiary transition-colors hover:underline decoration-tertiary decoration-2 underline-offset-4" href="#">Giáo xứ</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors hover:underline decoration-tertiary decoration-2 underline-offset-4" href="#">Facebook</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors hover:underline decoration-tertiary decoration-2 underline-offset-4" href="#">Liên hệ</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors hover:underline decoration-tertiary decoration-2 underline-offset-4" href="#">Tài liệu</a>
+</div>
+</div>
+</footer>
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest/90 backdrop-blur-md border-t border-outline-variant/10 z-50">
+<div class="flex justify-around items-center py-stack-sm">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-bold">Hoạt động</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">quiz</span>
+<span class="text-[10px] font-bold">Đố vui</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Cá nhân</span>
+</a>
+</div>
+</nav>
+<!-- FAB for quick action -->
+<button class="fixed bottom-24 right-4 md:bottom-10 md:right-10 w-14 h-14 bg-tertiary text-on-tertiary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">church</span>
+</button>
+</body></html>

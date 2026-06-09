@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TNTT Portal - Quản lý Truyền thông</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;family=Nunito:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#f8f9fa",
+                      "on-surface-variant": "#42474d",
+                      "surface-tint": "#42617d",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#eae4b1",
+                      "tertiary-fixed": "#ffdad5",
+                      "surface-container": "#edeeef",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e1e3e4",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#001d32",
+                      "tertiary-container": "#ffb0a5",
+                      "on-background": "#191c1d",
+                      "surface": "#f8f9fa",
+                      "on-tertiary-fixed": "#410001",
+                      "on-secondary-fixed-variant": "#4b4822",
+                      "on-secondary-fixed": "#1e1c00",
+                      "primary": "#42617d",
+                      "primary-fixed-dim": "#aacaea",
+                      "on-primary-fixed-variant": "#294964",
+                      "error": "#ba1a1a",
+                      "secondary": "#636037",
+                      "on-primary-container": "#34536f",
+                      "on-tertiary-container": "#a60006",
+                      "secondary-fixed-dim": "#cdc897",
+                      "on-secondary-container": "#67643b",
+                      "background": "#f8f9fa",
+                      "inverse-surface": "#2e3132",
+                      "surface-container-low": "#f3f4f5",
+                      "on-tertiary-fixed-variant": "#930005",
+                      "primary-container": "#a7c7e7",
+                      "tertiary": "#c00008",
+                      "on-surface": "#191c1d",
+                      "primary-fixed": "#cde5ff",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#aacaea",
+                      "surface-dim": "#d9dadb",
+                      "surface-container-high": "#e7e8e9",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c2c7ce",
+                      "tertiary-fixed-dim": "#ffb4a9",
+                      "outline": "#73777e",
+                      "secondary-container": "#e7e1ae"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "container-max": "1200px",
+                      "unit": "8px",
+                      "section-gap": "80px",
+                      "stack-sm": "8px",
+                      "margin-desktop": "40px",
+                      "stack-md": "16px",
+                      "stack-lg": "32px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "title-md": ["Quicksand"],
+                      "label-bold": ["Quicksand"],
+                      "body-md": ["Nunito"],
+                      "display-lg": ["Quicksand"],
+                      "headline-lg": ["Quicksand"],
+                      "headline-lg-mobile": ["Quicksand"],
+                      "body-lg": ["Nunito"]
+              },
+              "fontSize": {
+                      "title-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .duolingo-shadow {
+            box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.1);
+        }
+        .duolingo-shadow-primary {
+            box-shadow: 0 4px 0 0 #a60006;
+        }
+        .duolingo-shadow-secondary {
+            box-shadow: 0 4px 0 0 #34536f;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-sm">
+<nav class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-display-lg text-headline-lg text-primary">TNTT Portal</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Trang Chủ</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Hoạt Động</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Đố Vui</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Bảng Điều Khiển</a>
+<a class="font-title-md text-title-md text-primary font-bold border-b-2 border-primary" href="#">Truyền Thông</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<span class="font-label-bold text-label-bold text-on-surface">Admin Trù Mật</span>
+</div>
+</div>
+</nav>
+</header>
+<!-- SideNavBar & Main Content -->
+<div class="flex pt-24 min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 pt-24 bg-surface-container-low flex flex-col gap-unit hidden lg:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<p class="font-title-md text-[16px] leading-tight text-primary">Quản Trị</p>
+<p class="text-[12px] text-on-surface-variant">Liên Đoàn Ra Khơi</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-bold text-label-bold">Thống Kê</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-bold text-label-bold">Đoàn Sinh</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-label-bold text-label-bold">Huynh Trưởng</span>
+</a>
+<a class="bg-primary-container text-on-primary-container rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-label-bold text-label-bold">Quản lý bài viết</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-bold text-label-bold">Điểm Danh</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-bold text-label-bold">Quỹ Đoàn</span>
+</a>
+</nav>
+<div class="mt-auto pb-8 flex flex-col gap-1 border-t border-outline-variant pt-4">
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold">Cài Đặt</span>
+</a>
+<a class="text-error hover:bg-error-container rounded-r-full mr-4 flex items-center gap-3 px-6 py-3 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-bold text-label-bold">Đăng Xuất</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 px-margin-mobile md:px-margin-desktop pb-section-gap">
+<div class="max-w-container-max mx-auto">
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-gutter mt-stack-lg mb-stack-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Quản lý Truyền thông</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Phát triển nội dung số cho Xứ Đoàn Trù Mật.</p>
+</div>
+<button class="flex items-center gap-2 bg-tertiary text-on-tertiary px-8 py-3 rounded-xl font-title-md text-[18px] duolingo-shadow-primary active:translate-y-1 active:shadow-none transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                        Tạo bài viết mới
+                    </button>
+</div>
+<!-- Tabs -->
+<div class="flex gap-2 p-1 bg-surface-container-high w-fit rounded-full mb-stack-lg">
+<button class="bg-surface-container-lowest text-primary px-8 py-2 rounded-full font-label-bold text-label-bold shadow-sm">
+                        Tất cả bài viết
+                    </button>
+<button class="text-on-surface-variant hover:bg-surface-variant px-8 py-2 rounded-full font-label-bold text-label-bold transition-all">
+                        Danh mục
+                    </button>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter">
+<!-- Search & Filter Bar -->
+<div class="xl:col-span-12 flex flex-col md:flex-row gap-4 glass-card p-4 rounded-lg">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all" placeholder="Tìm kiếm bài viết..." type="text"/>
+</div>
+<div class="flex gap-4">
+<select class="bg-surface-container-low border-none rounded-xl px-6 py-3 font-label-bold text-on-surface-variant focus:ring-2 focus:ring-primary-container min-w-[180px]">
+<option>Mọi danh mục</option>
+<option>Tin tức Giáo xứ</option>
+<option>Hoạt động TNTT</option>
+<option>Gương sáng Giáo lý</option>
+</select>
+<button class="bg-surface-variant text-on-surface-variant p-3 rounded-xl hover:bg-outline-variant transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Article Table -->
+<div class="xl:col-span-8">
+<div class="glass-card rounded-lg overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-high">
+<tr>
+<th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Tiêu đề</th>
+<th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Danh mục</th>
+<th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Trạng thái</th>
+<th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant text-right">Hành động</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-5">
+<div class="flex gap-3 items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex-shrink-0">
+<img alt="Thumbnail" class="w-full h-full object-cover rounded-lg" data-alt="A cinematic, high-key photography of a brightly lit church interior during a festive celebration. The scene is filled with soft, warm golden light filtering through stained glass, highlighting the pristine white walls and elegant wooden pews. The atmosphere is peaceful, spiritual, and welcoming, perfectly matching the TNTT brand aesthetic of disciplined joy and light-mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD3P3h8Yl7ur4w0fh88qWsG5Irk52EUTlJ--BVbJwXoTAVvuRVkwdpocmEwU8Zrprf-POR9nLdjgI_LlQ6UxCZBoL_rmn9hGM7yS0tOyxeCaEhNSyT2Rp-qw4Iu6k3XDrVuK46xhaRHZIfgV97eHoupGlsNpXAl51Qy9XhJfK47fYiXewONujiyZ4tjNbd_0YIsrpJC-P66kk0_IE9lE9LSh9sNZHITy7heXh3msEZ_GEVllQjWM7IwTFwgDL2PlwkK79tATAAA2U"/>
+</div>
+<div>
+<p class="font-label-bold text-on-surface line-clamp-1">Khai mạc năm học Giáo lý 2024</p>
+<p class="text-[12px] text-outline">Bởi: Trưởng Minh • 12/10/2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-[12px] font-bold">Tin tức Giáo xứ</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 text-success-600">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="text-[13px] font-bold text-green-700">Đã đăng</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-primary"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg transition-all text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-5">
+<div class="flex gap-3 items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex-shrink-0">
+<img alt="Thumbnail" class="w-full h-full object-cover rounded-lg" data-alt="A vibrant, cheerful group illustration of Vietnamese youth in TNTT uniforms, smiling and participating in a team-building activity outdoors. The artistic style is modern, soft-shaded, and friendly with a pastel color palette. The lighting is bright morning sun, creating a high-contrast, energetic feel that embodies the disciplined playfulness of the movement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuYtBqcnsuokqWRz6z_qlGqUv3A92eXa3zbIJ7bQJd-9fDLj4iGWd7l1M4UeGMWEakqZZ7fNZ3aiCIbXauXqhPMl61XeP5UCKCcPoc9hEsWLluztEIuRK3yM4YdLlMcklguvklzOjKZaHMnNj_WNckCaSPnRQLKash5tjPC1_D3VoyDetTe0pkSikLBjt54wzU6BtbYJVPwJjEzUl2zlLwnmjCoQO5uHrf-i8k1FD76apJ-c1XHGmBHCAuob_jrzLDONqdvFygywA"/>
+</div>
+<div>
+<p class="font-label-bold text-on-surface line-clamp-1">Hành trình Sa mạc - Huynh Trưởng cấp 1</p>
+<p class="text-[12px] text-outline">Bởi: Trưởng Lan • 08/10/2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[12px] font-bold">Hoạt động TNTT</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<span class="text-[13px] font-bold text-on-surface-variant">Bản nháp</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-primary"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg transition-all text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-5">
+<div class="flex gap-3 items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex-shrink-0">
+<img alt="Thumbnail" class="w-full h-full object-cover rounded-lg" data-alt="A clean, minimalist workspace featuring an open Bible, a wooden cross, and a small plant on a light-colored wooden desk. The background is a soft, blurry white, emphasizing a peaceful atmosphere for study and reflection. The color palette consists of soft beiges, warm wood tones, and crisp whites, following the Apple-inspired premium minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBRxe7q9yDgClCj2FbhaLbQiaf9HpBII05oOiYaE7Qv4sQzfO5_5diYntg8MxC-vxKcF7MeBEMC_dOAR7EEd4vIo-2-nt1XvviGR0hN7o4027--te4f-sZOociHhe9WzUNx27iha3bNpJa2ko4ugQV6X1lz4kbdjYobwgU2S5LYTItI6c0Uik8xHBlgumc14v2p74taB_aIe9XexqWhCYQ0o34QegKuzG7ZPfTT9jyHcqH_Xi_HTVhfcnGa8qxjJX4B9F1_dHqA8E"/>
+</div>
+<div>
+<p class="font-label-bold text-on-surface line-clamp-1">Gương sáng: Em Maria Nguyễn Văn A</p>
+<p class="text-[12px] text-outline">Bởi: Admin • 05/10/2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[12px] font-bold">Gương sáng Giáo lý</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 text-success-600">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="text-[13px] font-bold text-green-700">Đã đăng</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-primary"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-surface-variant rounded-lg transition-all text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg transition-all text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low flex justify-between items-center">
+<span class="text-[14px] text-on-surface-variant">Hiển thị 3 / 48 bài viết</span>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest hover:bg-outline-variant transition-all"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-sm font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-all font-bold">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-all font-bold">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest hover:bg-outline-variant transition-all"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Category Management Sidebar Section -->
+<div class="xl:col-span-4 space-y-gutter">
+<div class="glass-card p-6 rounded-lg">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-title-md text-[20px] text-on-surface">Danh mục</h3>
+<button class="text-primary hover:bg-primary-container p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-primary rounded-full"></div>
+<div>
+<p class="font-label-bold text-on-surface">Tin tức Giáo xứ</p>
+<p class="text-[12px] text-on-surface-variant">24 bài viết</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-secondary transition-all"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-all"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-secondary rounded-full"></div>
+<div>
+<p class="font-label-bold text-on-surface">Hoạt động TNTT</p>
+<p class="text-[12px] text-on-surface-variant">12 bài viết</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-secondary transition-all"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-all"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-tertiary rounded-full"></div>
+<div>
+<p class="font-label-bold text-on-surface">Gương sáng Giáo lý</p>
+<p class="text-[12px] text-on-surface-variant">8 bài viết</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-secondary transition-all"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-all"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border-2 border-dashed border-outline-variant text-on-surface-variant rounded-xl hover:bg-surface-variant hover:border-primary transition-all font-label-bold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">post_add</span>
+                                Thêm danh mục mới
+                            </button>
+</div>
+<!-- Stats Card -->
+<div class="bg-primary text-on-primary p-6 rounded-lg shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-title-md text-[18px] mb-4 opacity-90">Tổng quan tháng này</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/10 p-3 rounded-xl backdrop-blur-md">
+<p class="text-[12px] font-bold opacity-80 uppercase tracking-wider">Bài viết</p>
+<p class="text-headline-lg font-display-lg mt-1">12</p>
+</div>
+<div class="bg-white/10 p-3 rounded-xl backdrop-blur-md">
+<p class="text-[12px] font-bold opacity-80 uppercase tracking-wider">Lượt xem</p>
+<p class="text-headline-lg font-display-lg mt-1">1.2K</p>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-[120px] opacity-10 rotate-12">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-dim w-full mt-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter px-margin-desktop py-stack-lg max-w-container-max mx-auto">
+<div>
+<p class="font-title-md text-title-md text-primary mb-4">TNTT Portal</p>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">Xây dựng thế hệ trẻ Kitô hữu theo tinh thần Thiếu Nhi Thánh Thể Việt Nam.</p>
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface mb-4">Liên Kết Nhanh</p>
+<div class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Liên Hệ Giáo Xứ</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Nội Quy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Tài Liệu Huấn Luyện</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Hỗ Trợ</a>
+</div>
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface mb-4">Thông Tin</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Xứ Đoàn Trù Mật - Liên Đoàn Ra Khơi</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">© 2024 Thiếu Nhi Thánh Thể Việt Nam</p>
+</div>
+</div>
+</footer>
+<!-- FAB (Suppressed on this admin-focused screen per instructions) -->
+</body></html>
