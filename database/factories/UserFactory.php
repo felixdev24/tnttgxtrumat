@@ -31,7 +31,25 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'qr_token' => Str::uuid()->toString(),
         ];
+    }
+
+    /**
+     * Indicate that the user is a Doan Sinh.
+     */
+    public function doanSinh(): static
+    {
+        $gradeLevels = ['Khai Tâm 1', 'Khai Tâm 2', 'Rước Lễ 1', 'Rước Lễ 2', 'Thêm Sức 1', 'Thêm Sức 2', 'Bao Đồng 1', 'Bao Đồng 2'];
+
+        return $this->state(fn (array $attributes) => [
+            'role' => 'giao_ly_sinh',
+            'grade_level' => fake()->randomElement($gradeLevels),
+            'branch' => fake()->randomElement(['Ấu', 'Thiếu', 'Nghĩa', 'Hiệp']),
+            'phone' => fake()->phoneNumber(),
+            'parent_phone' => fake()->phoneNumber(),
+            'dob' => fake()->dateTimeBetween('-18 years', '-6 years')->format('Y-m-d'),
+        ]);
     }
 
     /**

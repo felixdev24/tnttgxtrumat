@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'name',
@@ -26,6 +27,7 @@ use Illuminate\Notifications\Notifiable;
     'years_of_activity',
     'grade_level',
     'branch',
+    'qr_token',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -54,5 +56,44 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function attendanceRecords(): HasMany
+    {
+        return $this->hasMany(AttendanceRecord::class);
+    }
+
+    public function createdSessions(): HasMany
+    {
+        return $this->hasMany(AttendanceSession::class, 'created_by');
+    }
+
+    public function scopeDoanSinh($query)
+    {
+        return $query->where('role', 'giao_ly_sinh');
+    }
+
+    public function scopeHuynhTruong($query)
+    {
+        return $query->where('role', 'huynh_truong');
+    }
+
+    public function scopeByGradeLevel($query, $level)
+    {
+        return $query->where('grade_level', $level);
+    }
+
+    public function generateQrToken(): string
+    {
+        return Str::uuid()->toString();
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (empty($user->qr_token)) {
+                $user->qr_token = $user->generateQrToken();
+            }
+        });
     }
 }

@@ -1,15 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\AttendanceController;
+use App\Http\Controllers\Dashboard\CalendarController;
+use App\Http\Controllers\Dashboard\DoanSinhController;
+use App\Http\Controllers\Dashboard\HuynhTruongController;
 use App\Http\Controllers\Dashboard\PostCategoryController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\QuizController;
-use App\Http\Controllers\Dashboard\CalendarController;
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicQuizController;
-use Illuminate\Support\Facades\Route;
-
+use App\Models\CalendarEvent;
 use App\Models\Post;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -18,7 +21,7 @@ Route::get('/', function () {
         ->take(5)
         ->get();
 
-    $calendarEvents = \App\Models\CalendarEvent::whereDate('event_date', '>=', now()->startOfMonth())
+    $calendarEvents = CalendarEvent::whereDate('event_date', '>=', now()->startOfMonth())
         ->whereDate('event_date', '<=', now()->addMonths(2)->endOfMonth())
         ->orderBy('event_date')
         ->get();
@@ -42,27 +45,66 @@ Route::get('/hoat-dong', [PublicPostController::class, 'index'])->name('posts.in
 Route::get('/hoat-dong/{slug}', [PublicPostController::class, 'show'])->name('posts.show');
 
 Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function () {
-    Route::get('/', function () { return redirect()->route('dashboard.posts.index'); })->name('dashboard.index');
+    Route::get('/', function () {
+        return redirect()->route('dashboard.posts.index');
+    })->name('dashboard.index');
+
+    // Posts
     Route::get('/posts', [PostController::class, 'index'])->name('dashboard.posts.index');
     Route::get('/posts/create', [PostController::class, 'create'])->name('dashboard.posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('dashboard.posts.store');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('dashboard.posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('dashboard.posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('dashboard.posts.destroy');
+    Route::post('/upload-image', [PostController::class, 'uploadImage'])->name('dashboard.upload-image');
+
+    // Post Categories
     Route::post('/posts/categories', [PostCategoryController::class, 'store'])->name('dashboard.posts.categories.store');
     Route::put('/posts/categories/{category}', [PostCategoryController::class, 'update'])->name('dashboard.posts.categories.update');
     Route::delete('/posts/categories/{category}', [PostCategoryController::class, 'destroy'])->name('dashboard.posts.categories.destroy');
 
+    // Quizzes
     Route::get('/quizzes', [QuizController::class, 'index'])->name('dashboard.quizzes.index');
     Route::post('/quizzes/weeks', [QuizController::class, 'storeWeek'])->name('dashboard.quizzes.weeks.store');
     Route::post('/quizzes/questions', [QuizController::class, 'storeQuestion'])->name('dashboard.quizzes.questions.store');
     Route::delete('/quizzes/questions/{question}', [QuizController::class, 'destroyQuestion'])->name('dashboard.quizzes.questions.destroy');
 
+    // Calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('dashboard.calendar.index');
     Route::post('/calendar', [CalendarController::class, 'store'])->name('dashboard.calendar.store');
     Route::put('/calendar/{calendarEvent}', [CalendarController::class, 'update'])->name('dashboard.calendar.update');
     Route::delete('/calendar/{calendarEvent}', [CalendarController::class, 'destroy'])->name('dashboard.calendar.destroy');
+
+    // Đoàn Sinh
+    Route::get('/doan-sinh', [DoanSinhController::class, 'index'])->name('dashboard.doan-sinh.index');
+    Route::post('/doan-sinh', [DoanSinhController::class, 'store'])->name('dashboard.doan-sinh.store');
+    Route::put('/doan-sinh/{user}', [DoanSinhController::class, 'update'])->name('dashboard.doan-sinh.update');
+    Route::delete('/doan-sinh/{user}', [DoanSinhController::class, 'destroy'])->name('dashboard.doan-sinh.destroy');
+    Route::get('/doan-sinh/{user}/qr', [DoanSinhController::class, 'showQr'])->name('dashboard.doan-sinh.qr');
+    Route::get('/doan-sinh/{user}/qr/download', [DoanSinhController::class, 'downloadQr'])->name('dashboard.doan-sinh.qr.download');
+
+    // Huynh Trưởng
+    Route::get('/huynh-truong', [HuynhTruongController::class, 'index'])->name('dashboard.huynh-truong.index');
+    Route::post('/huynh-truong', [HuynhTruongController::class, 'store'])->name('dashboard.huynh-truong.store');
+    Route::put('/huynh-truong/{user}', [HuynhTruongController::class, 'update'])->name('dashboard.huynh-truong.update');
+    Route::delete('/huynh-truong/{user}', [HuynhTruongController::class, 'destroy'])->name('dashboard.huynh-truong.destroy');
+    Route::post('/huynh-truong/{user}/reset-password', [HuynhTruongController::class, 'resetPassword'])->name('dashboard.huynh-truong.reset-password');
+
+    // Điểm Danh
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('dashboard.attendance.index');
+    Route::get('/attendance/stats', [AttendanceController::class, 'stats'])->name('dashboard.attendance.stats');
+    Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('dashboard.attendance.create');
+    Route::post('/attendance', [AttendanceController::class, 'store'])->name('dashboard.attendance.store');
+    Route::get('/attendance/{session}', [AttendanceController::class, 'show'])->name('dashboard.attendance.show');
+    Route::put('/attendance/{session}', [AttendanceController::class, 'update'])->name('dashboard.attendance.update');
+    Route::delete('/attendance/{session}', [AttendanceController::class, 'destroy'])->name('dashboard.attendance.destroy');
+    Route::get('/attendance/{session}/scan', [AttendanceController::class, 'scan'])->name('dashboard.attendance.scan');
+    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('dashboard.attendance.check-in');
+    Route::post('/attendance/{session}/manual', [AttendanceController::class, 'manualCheckIn'])->name('dashboard.attendance.manual-check-in');
 });
 
 Route::fallback(function () {
     return Inertia::render('ComingSoon', [
-        'title' => 'Tính năng đang phát triển'
+        'title' => 'Tính năng đang phát triển',
     ]);
 });

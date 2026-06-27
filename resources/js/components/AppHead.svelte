@@ -123,22 +123,22 @@
         <div
             class="mx-auto flex h-20 w-full max-w-[1200px] items-center justify-between gap-3 px-4 py-2 md:px-10"
         >
-            <div class="flex min-w-0 items-center gap-3">
+            <div class="flex min-w-0 items-center gap-2 md:gap-3">
                 <img
                     src={logoSrc}
                     alt={brandLine}
-                    class="h-12 w-12 shrink-0 rounded-full object-contain shadow-sm"
+                    class="h-10 w-10 md:h-12 md:w-12 shrink-0 rounded-full object-contain shadow-sm"
                     width="48"
                     height="48"
                 />
-                <div class="min-w-0 leading-tight">
+                <div class="min-w-0 flex flex-col justify-center leading-tight">
                     <span
-                        class="block truncate font-['Quicksand',sans-serif] text-lg font-bold tracking-tight text-[#c00008] md:text-xl dark:text-[#ffb4a9]"
+                        class="block truncate font-['Quicksand',sans-serif] text-base font-bold tracking-tight text-[#c00008] sm:text-lg md:text-xl dark:text-[#ffb4a9]"
                     >
                         {brandLine}
                     </span>
                     <span
-                        class="block truncate font-['Nunito',sans-serif] text-[12px] font-medium uppercase tracking-wider text-[#42617d]/80 dark:text-[#aacaea]/90"
+                        class="hidden sm:block truncate font-['Nunito',sans-serif] text-[10px] md:text-[12px] font-medium uppercase tracking-wider text-[#42617d]/80 dark:text-[#aacaea]/90"
                     >
                         {parishName}
                     </span>

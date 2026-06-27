@@ -4,30 +4,35 @@
     import { onMount, onDestroy } from 'svelte';
     import { Editor } from '@tiptap/core';
     import StarterKit from '@tiptap/starter-kit';
-    import Image from '@tiptap/extension-image';
+    import { ImageResize } from 'tiptap-extension-resize-image';
     import TiptapLink from '@tiptap/extension-link';
     import TextAlign from '@tiptap/extension-text-align';
     import Placeholder from '@tiptap/extension-placeholder';
+    import Underline from '@tiptap/extension-underline';
+    import DOMPurify from 'isomorphic-dompurify';
+
 
     let {
         categories = [],
     }: {
-        categories?: string[];
+        categories?: Array<{ id: number; name: string }>;
     } = $props();
 
     const form = useForm({
         title: '',
         content: '',
         status: 'draft',
-        category: categories[0] ?? '',
-        tags: [],
+        category: categories[0]?.name ?? '',
+        tags: [] as string[],
         cover_image: null as File | null | string,
-        scheduled_at: null
+        scheduled_at: null as string | null,
     });
 
     let element: HTMLElement;
-    let editor: Editor;
+    let editor = $state.raw<Editor | null>(null);
+    let editorUpdateTrigger = $state(0);
     let fileInput: HTMLInputElement;
+    let editorImageInput: HTMLInputElement;
     let coverPreview: string | null = $state(null);
     let isDraggingOver = $state(false);
 
@@ -85,8 +90,9 @@
             element: element,
             extensions: [
                 StarterKit,
-                Image,
-                TiptapLink,
+                Underline,
+                ImageResize,
+                TiptapLink.configure({ openOnClick: false }),
                 TextAlign.configure({
                     types: ['heading', 'paragraph'],
                 }),
@@ -96,11 +102,10 @@
             ],
             content: form.content,
             onTransaction: () => {
-                // force re-render so buttons can update state
-                editor = editor;
+                editorUpdateTrigger++;
             },
             onUpdate: ({ editor }) => {
-                form.content = editor.getHTML();
+                form.content = DOMPurify.sanitize(editor.getHTML());
             },
             editorProps: {
                 attributes: {
@@ -119,23 +124,71 @@
         }
     });
 
-    function toggleBold() { editor.chain().focus().toggleBold().run(); }
-    function toggleItalic() { editor.chain().focus().toggleItalic().run(); }
-    function toggleStrike() { editor.chain().focus().toggleStrike().run(); }
-    function setParagraph() { editor.chain().focus().setParagraph().run(); }
-    function toggleHeading(level: 1 | 2 | 3) { editor.chain().focus().toggleHeading({ level }).run(); }
-    function toggleBulletList() { editor.chain().focus().toggleBulletList().run(); }
-    function toggleOrderedList() { editor.chain().focus().toggleOrderedList().run(); }
-    function toggleBlockquote() { editor.chain().focus().toggleBlockquote().run(); }
+    function toggleBold() { editor?.chain().focus().toggleBold().run(); }
+    function toggleItalic() { editor?.chain().focus().toggleItalic().run(); }
+    function toggleStrike() { editor?.chain().focus().toggleStrike().run(); }
+    function toggleUnderline() { editor?.chain().focus().toggleUnderline().run(); }
+    function setParagraph() { editor?.chain().focus().setParagraph().run(); }
+    function toggleHeading(level: 1 | 2 | 3) { editor?.chain().focus().toggleHeading({ level }).run(); }
+    function toggleBulletList() { editor?.chain().focus().toggleBulletList().run(); }
+    function toggleOrderedList() { editor?.chain().focus().toggleOrderedList().run(); }
+    function toggleBlockquote() { editor?.chain().focus().toggleBlockquote().run(); }
+    function toggleCodeBlock() { editor?.chain().focus().toggleCodeBlock().run(); }
+    function setHorizontalRule() { editor?.chain().focus().setHorizontalRule().run(); }
 
-    function setAlign(alignment: 'left' | 'center' | 'right') {
-        editor.chain().focus().setTextAlign(alignment).run();
+    function setAlign(alignment: 'left' | 'center' | 'right' | 'justify') {
+        editor?.chain().focus().setTextAlign(alignment).run();
+    }
+
+    function getCookie(name: string) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return decodeURIComponent(parts.pop()?.split(';').shift() || '');
+        return '';
     }
 
     function addImage() {
-        const url = window.prompt('URL hình ảnh:');
-        if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
+        if (editorImageInput) {
+            editorImageInput.click();
+        }
+    }
+
+    async function handleEditorImageSelected(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        if (!file.type.startsWith('image/')) {
+            alert('Vui lòng chọn file hình ảnh.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const token = getCookie('XSRF-TOKEN');
+            const response = await fetch('/dashboard/upload-image', {
+                method: 'POST',
+                headers: {
+                    'X-XSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.url && editor) {
+                editor.chain().focus().setImage({ src: data.url }).run();
+            } else {
+                alert(data.message || 'Lỗi tải ảnh lên.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Có lỗi xảy ra khi tải ảnh.');
+        } finally {
+            input.value = '';
         }
     }
 
@@ -175,6 +228,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
                 <!-- Editor Canvas -->
                 <div class="lg:col-span-8 flex flex-col gap-gutter">
+                    <!-- Hidden input for Tiptap image upload -->
+                    <input bind:this={editorImageInput} type="file" accept="image/*" class="hidden" onchange={handleEditorImageSelected} />
+
                     <!-- Cover Image Upload -->
                     <input bind:this={fileInput} type="file" accept="image/*" class="hidden" onchange={onFileSelected} id="cover-image-input" />
 
@@ -221,33 +277,39 @@
                     </div>
 
                     <!-- Rich Text Editor -->
-                    <div class="glass-card rounded-xl flex flex-col min-h-[600px] overflow-hidden">
+                    <div class="glass-card rounded-xl flex flex-col min-h-[600px] overflow-hidden border border-outline-variant/30">
                         <!-- Toolbar -->
                         {#if editor}
-                            <div class="flex flex-wrap items-center gap-1 p-3 bg-surface-container-low border-b border-outline-variant/20">
+                            <div class="flex flex-wrap items-center gap-1 p-3 bg-surface-container border-b border-outline-variant/20 shadow-sm" data-trigger={editorUpdateTrigger}>
                                 <button onclick={toggleBold} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('bold') ? 'bg-surface-variant' : ''}" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
                                 <button onclick={toggleItalic} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('italic') ? 'bg-surface-variant' : ''}" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
                                 <button onclick={toggleStrike} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('strike') ? 'bg-surface-variant' : ''}" title="Strikethrough"><span class="material-symbols-outlined">format_strikethrough</span></button>
-                                
+                                <button onclick={toggleUnderline} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('underline') ? 'bg-surface-variant' : ''}" title="Underline"><span class="material-symbols-outlined">format_underlined</span></button>
+
                                 <div class="w-[1px] h-6 bg-outline-variant/30 mx-1"></div>
-                                
+
                                 <button onclick={() => toggleHeading(1)} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('heading', { level: 1 }) ? 'bg-surface-variant' : ''}" title="H1"><span class="material-symbols-outlined">format_h1</span></button>
                                 <button onclick={() => toggleHeading(2)} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('heading', { level: 2 }) ? 'bg-surface-variant' : ''}" title="H2"><span class="material-symbols-outlined">format_h2</span></button>
-                                
+                                <button onclick={() => toggleHeading(3)} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('heading', { level: 3 }) ? 'bg-surface-variant' : ''}" title="H3"><span class="material-symbols-outlined">format_h3</span></button>
+
                                 <div class="w-[1px] h-6 bg-outline-variant/30 mx-1"></div>
-                                
+
                                 <button onclick={toggleBulletList} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('bulletList') ? 'bg-surface-variant' : ''}" title="List"><span class="material-symbols-outlined">format_list_bulleted</span></button>
                                 <button onclick={toggleOrderedList} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('orderedList') ? 'bg-surface-variant' : ''}" title="Numbered List"><span class="material-symbols-outlined">format_list_numbered</span></button>
                                 <button onclick={toggleBlockquote} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('blockquote') ? 'bg-surface-variant' : ''}" title="Quote"><span class="material-symbols-outlined">format_quote</span></button>
-                                
+                                <button onclick={toggleCodeBlock} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive('codeBlock') ? 'bg-surface-variant' : ''}" title="Code Block"><span class="material-symbols-outlined">code</span></button>
+
                                 <div class="w-[1px] h-6 bg-outline-variant/30 mx-1"></div>
-                                
+
                                 <button onclick={addImage} class="p-2 hover:bg-surface-variant rounded-lg transition-all" title="Image"><span class="material-symbols-outlined">add_photo_alternate</span></button>
-                                
+                                <button onclick={setHorizontalRule} class="p-2 hover:bg-surface-variant rounded-lg transition-all" title="Horizontal Rule"><span class="material-symbols-outlined">horizontal_rule</span></button>
+
                                 <div class="w-[1px] h-6 bg-outline-variant/30 mx-1"></div>
-                                
+
                                 <button onclick={() => setAlign('left')} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive({ textAlign: 'left' }) ? 'bg-surface-variant' : ''}" title="Align Left"><span class="material-symbols-outlined">format_align_left</span></button>
                                 <button onclick={() => setAlign('center')} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive({ textAlign: 'center' }) ? 'bg-surface-variant' : ''}" title="Align Center"><span class="material-symbols-outlined">format_align_center</span></button>
+                                <button onclick={() => setAlign('right')} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive({ textAlign: 'right' }) ? 'bg-surface-variant' : ''}" title="Align Right"><span class="material-symbols-outlined">format_align_right</span></button>
+                                <button onclick={() => setAlign('justify')} class="p-2 hover:bg-surface-variant rounded-lg transition-all {editor.isActive({ textAlign: 'justify' }) ? 'bg-surface-variant' : ''}" title="Align Justify"><span class="material-symbols-outlined">format_align_justify</span></button>
                             </div>
                         {/if}
 
@@ -269,8 +331,8 @@
                             <div>
                                 <label class="block font-label-bold text-on-surface-variant mb-2">Danh mục chính</label>
                                 <select bind:value={form.category} class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 appearance-none outline-none">
-                                    {#each categories as category (category)}
-                                        <option value={category}>{category}</option>
+                                    {#each categories as category (category.id)}
+                                        <option value={category.name}>{category.name}</option>
                                     {:else}
                                         <option value="">Chưa có danh mục</option>
                                     {/each}

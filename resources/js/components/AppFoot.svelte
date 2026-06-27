@@ -12,9 +12,12 @@
         brandLine = 'Thiếu Nhi Thánh Thể',
         copyright,
         footerLinks = [
-            { label: 'Giáo xứ', href: '#' },
-            { label: 'Facebook', href: '#' },
-            { label: 'Liên hệ', href: '#' },
+            { label: 'Giáo xứ', href: 'https://www.facebook.com/giaoxuTruMat' },
+            {
+                label: 'Facebook',
+                href: 'https://www.facebook.com/tnttgxtrumat',
+            },
+            { label: 'Liên hệ', href: 'tel:0868107004' },
             { label: 'Tài liệu', href: '#' },
         ] satisfies FooterLink[],
         children,

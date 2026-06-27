@@ -1,6 +1,6 @@
 <script lang="ts">
     import DashboardLayout from '../../../layouts/DashboardLayout.svelte';
-    import { Link, router, useForm } from '@inertiajs/svelte';
+    import { Link, router, useForm, page } from '@inertiajs/svelte';
 
     interface PostCategory {
         id: number;
@@ -34,6 +34,7 @@
     const editForm = useForm({ name: '' });
 
     let editingId = $state<number | null>(null);
+    let flash = $derived((page.props as any).flash as { success?: string; error?: string } | undefined);
 
     function switchTab(next: 'posts' | 'categories'): void {
         router.get(
@@ -81,6 +82,13 @@
 
         router.delete(`/dashboard/posts/categories/${category.id}`, { preserveScroll: true });
     }
+
+    function deletePost(postId: number, title: string): void {
+        if (!confirm(`Bạn có chắc muốn xóa bài viết "${title}"?\nHành động này không thể hoàn tác.`)) {
+            return;
+        }
+        router.delete(`/dashboard/posts/${postId}`);
+    }
 </script>
 
 <svelte:head>
@@ -89,6 +97,18 @@
 
 <DashboardLayout>
     <div class="px-margin-mobile md:px-margin-desktop pb-section-gap pt-stack-lg">
+        {#if flash?.success}
+            <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-2 font-label-bold">
+                <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+                {flash.success}
+            </div>
+        {/if}
+        {#if flash?.error}
+            <div class="mb-4 p-4 bg-error-container/30 border border-error-container text-error rounded-xl flex items-center gap-2 font-label-bold">
+                <span class="material-symbols-outlined">error</span>
+                {flash.error}
+            </div>
+        {/if}
         <div class="max-w-container-max mx-auto">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-gutter mb-stack-lg">
                 <div>
@@ -159,7 +179,7 @@
                     <div class="xl:col-span-8">
                         <div class="glass-card rounded-lg overflow-hidden">
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left">
+                                <table class="w-full text-left min-w-[700px]">
                                     <thead class="bg-surface-container-high">
                                         <tr>
                                             <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Tiêu đề</th>
@@ -205,10 +225,19 @@
                                                 </td>
                                                 <td class="px-6 py-5 text-right">
                                                     <div class="flex justify-end gap-2">
-                                                        <button type="button" class="p-2 hover:bg-surface-variant rounded-lg transition-all text-secondary">
+                                                        <Link
+                                                            href={`/dashboard/posts/${post.id}/edit`}
+                                                            class="p-2 hover:bg-surface-variant rounded-lg transition-all text-secondary flex items-center"
+                                                            title="Chỉnh sửa"
+                                                        >
                                                             <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                        </button>
-                                                        <button type="button" class="p-2 hover:bg-error-container rounded-lg transition-all text-error">
+                                                        </Link>
+                                                        <button
+                                                            type="button"
+                                                            class="p-2 hover:bg-error-container rounded-lg transition-all text-error"
+                                                            title="Xóa bài viết"
+                                                            onclick={() => deletePost(post.id, post.title)}
+                                                        >
                                                             <span class="material-symbols-outlined text-[20px]">delete</span>
                                                         </button>
                                                     </div>
