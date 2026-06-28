@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\DoanSinhController;
 use App\Http\Controllers\Dashboard\HuynhTruongController;
 use App\Http\Controllers\Dashboard\PostCategoryController;
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\Dashboard\QuizController;
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicQuizController;
@@ -83,12 +84,19 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
     Route::get('/doan-sinh/{user}/qr', [DoanSinhController::class, 'showQr'])->name('dashboard.doan-sinh.qr');
     Route::get('/doan-sinh/{user}/qr/download', [DoanSinhController::class, 'downloadQr'])->name('dashboard.doan-sinh.qr.download');
 
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('dashboard.profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('dashboard.profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('dashboard.profile.password.update');
+
     // Huynh Trưởng
-    Route::get('/huynh-truong', [HuynhTruongController::class, 'index'])->name('dashboard.huynh-truong.index');
-    Route::post('/huynh-truong', [HuynhTruongController::class, 'store'])->name('dashboard.huynh-truong.store');
-    Route::put('/huynh-truong/{user}', [HuynhTruongController::class, 'update'])->name('dashboard.huynh-truong.update');
-    Route::delete('/huynh-truong/{user}', [HuynhTruongController::class, 'destroy'])->name('dashboard.huynh-truong.destroy');
-    Route::post('/huynh-truong/{user}/reset-password', [HuynhTruongController::class, 'resetPassword'])->name('dashboard.huynh-truong.reset-password');
+    Route::middleware('super_admin')->group(function () {
+        Route::get('/huynh-truong', [HuynhTruongController::class, 'index'])->name('dashboard.huynh-truong.index');
+        Route::post('/huynh-truong', [HuynhTruongController::class, 'store'])->name('dashboard.huynh-truong.store');
+        Route::put('/huynh-truong/{user}', [HuynhTruongController::class, 'update'])->name('dashboard.huynh-truong.update');
+        Route::delete('/huynh-truong/{user}', [HuynhTruongController::class, 'destroy'])->name('dashboard.huynh-truong.destroy');
+        Route::post('/huynh-truong/{user}/reset-password', [HuynhTruongController::class, 'resetPassword'])->name('dashboard.huynh-truong.reset-password');
+    });
 
     // Điểm Danh
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('dashboard.attendance.index');

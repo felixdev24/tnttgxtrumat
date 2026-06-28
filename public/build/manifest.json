@@ -3,14 +3,14 @@
     "file": "assets/DashboardLayout-CQFzmwqr.css",
     "src": "_DashboardLayout-CQFzmwqr.css"
   },
-  "_DashboardLayout-wh2G_6Jd.js": {
-    "file": "assets/DashboardLayout-wh2G_6Jd.js",
+  "_DashboardLayout-wZimXgWW.js": {
+    "file": "assets/DashboardLayout-wZimXgWW.js",
     "name": "DashboardLayout",
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "dynamicImports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/DashboardLayout-CQFzmwqr.css"
@@ -20,12 +20,12 @@
     "file": "assets/chunk-z5H_xwo0.js",
     "name": "chunk"
   },
-  "_dist-C50KCpx1.js": {
-    "file": "assets/dist-C50KCpx1.js",
+  "_dist-Bf41lVZi.js": {
+    "file": "assets/dist-Bf41lVZi.js",
     "name": "dist"
   },
-  "_dist-Dgd8OTAM.js": {
-    "file": "assets/dist-Dgd8OTAM.js",
+  "_dist-DWZVwsDY.js": {
+    "file": "assets/dist-DWZVwsDY.js",
     "name": "dist",
     "imports": [
       "_chunk-z5H_xwo0.js"
@@ -83,15 +83,8 @@
     "file": "assets/instrument-sans-600-normal-DMks36a2.woff",
     "src": "_instrument-sans-600-normal-DMks36a2.woff"
   },
-  "_legacy-DcaxJoup.js": {
-    "file": "assets/legacy-DcaxJoup.js",
-    "name": "legacy",
-    "imports": [
-      "_dist-Dgd8OTAM.js"
-    ]
-  },
   "resources/css/app.css": {
-    "file": "assets/app-BNbE9Meg.css",
+    "file": "assets/app-BwT8bfJ1.css",
     "name": "app",
     "names": [
       "app.css"
@@ -100,15 +93,15 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-CSIgJd4F.js",
+    "file": "assets/app-Z9146Vty.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "dynamicImports": [
-      "_dist-Dgd8OTAM.js",
+      "_dist-DWZVwsDY.js",
       "resources/js/pages/ComingSoon.svelte",
       "resources/js/pages/Welcome.svelte",
       "resources/js/pages/auth/Login.svelte",
@@ -122,6 +115,7 @@
       "resources/js/pages/dashboard/posts/Create.svelte",
       "resources/js/pages/dashboard/posts/Edit.svelte",
       "resources/js/pages/dashboard/posts/Index.svelte",
+      "resources/js/pages/dashboard/profile/Index.svelte",
       "resources/js/pages/dashboard/quizzes/Index.svelte",
       "resources/js/pages/posts/Index.svelte",
       "resources/js/pages/posts/Show.svelte",
@@ -133,218 +127,226 @@
     ]
   },
   "resources/js/pages/ComingSoon.svelte": {
-    "file": "assets/ComingSoon-C587B7QC.js",
+    "file": "assets/ComingSoon-C9WQC6AA.js",
     "name": "ComingSoon",
     "src": "resources/js/pages/ComingSoon.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_legacy-DcaxJoup.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/ComingSoon-CsmUt67a.css"
     ]
   },
   "resources/js/pages/Welcome.svelte": {
-    "file": "assets/Welcome-Bu1IhJ8I.js",
+    "file": "assets/Welcome-DiRpVBlL.js",
     "name": "Welcome",
     "src": "resources/js/pages/Welcome.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Welcome-ofYTqurb.css"
     ]
   },
   "resources/js/pages/auth/Login.svelte": {
-    "file": "assets/Login-Dyh5MgQi.js",
+    "file": "assets/Login-tgSa9TYa.js",
     "name": "Login",
     "src": "resources/js/pages/auth/Login.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_legacy-DcaxJoup.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Login-BRVL3BjS.css"
     ]
   },
   "resources/js/pages/dashboard/attendance/Index.svelte": {
-    "file": "assets/Index-B4ehKPx0.js",
+    "file": "assets/Index-GuWllAxj.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/attendance/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/dashboard/attendance/Scan.svelte": {
-    "file": "assets/Scan-CNJzyoRL.js",
+    "file": "assets/Scan-Zn-IdthP.js",
     "name": "Scan",
     "src": "resources/js/pages/dashboard/attendance/Scan.svelte",
     "isDynamicEntry": true,
     "imports": [
       "_chunk-z5H_xwo0.js",
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ],
     "css": [
       "assets/Scan-Dl4lzHsj.css"
     ]
   },
   "resources/js/pages/dashboard/attendance/Show.svelte": {
-    "file": "assets/Show-BCnjDEaW.js",
+    "file": "assets/Show-CR-a9Sge.js",
     "name": "Show",
     "src": "resources/js/pages/dashboard/attendance/Show.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/dashboard/attendance/Stats.svelte": {
-    "file": "assets/Stats-MfWnJOIC.js",
+    "file": "assets/Stats-DxiIm6Nl.js",
     "name": "Stats",
     "src": "resources/js/pages/dashboard/attendance/Stats.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/dashboard/calendar/Index.svelte": {
-    "file": "assets/Index-CfZqyuEl.js",
+    "file": "assets/Index-BK1RNtWj.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/calendar/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ],
     "css": [
       "assets/Index-DpJiVxX7.css"
     ]
   },
   "resources/js/pages/dashboard/doan-sinh/Index.svelte": {
-    "file": "assets/Index-BnGHZhxn.js",
+    "file": "assets/Index-T9OWNVH2.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/doan-sinh/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
       "_chunk-z5H_xwo0.js",
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ],
     "css": [
       "assets/Index-DjY4xEwJ.css"
     ]
   },
   "resources/js/pages/dashboard/huynh-truong/Index.svelte": {
-    "file": "assets/Index-BzvGSE25.js",
+    "file": "assets/Index-Bp-oT_qM.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/huynh-truong/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/dashboard/posts/Create.svelte": {
-    "file": "assets/Create-B9ETqx_o.js",
+    "file": "assets/Create-6ntpHiSz.js",
     "name": "Create",
     "src": "resources/js/pages/dashboard/posts/Create.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_dist-C50KCpx1.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_dist-Bf41lVZi.js",
+      "_DashboardLayout-wZimXgWW.js"
     ],
     "css": [
       "assets/Edit-JnevZop1.css"
     ]
   },
   "resources/js/pages/dashboard/posts/Edit.svelte": {
-    "file": "assets/Edit-O41TNBt8.js",
+    "file": "assets/Edit-BYSwenNl.js",
     "name": "Edit",
     "src": "resources/js/pages/dashboard/posts/Edit.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_dist-C50KCpx1.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_dist-Bf41lVZi.js",
+      "_DashboardLayout-wZimXgWW.js"
     ],
     "dynamicImports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Edit-JnevZop1.css"
     ]
   },
   "resources/js/pages/dashboard/posts/Index.svelte": {
-    "file": "assets/Index-C31so965.js",
+    "file": "assets/Index-U-lPfyOm.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/posts/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
+    ]
+  },
+  "resources/js/pages/dashboard/profile/Index.svelte": {
+    "file": "assets/Index-4_pDdr6y.js",
+    "name": "Index",
+    "src": "resources/js/pages/dashboard/profile/Index.svelte",
+    "isDynamicEntry": true,
+    "imports": [
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/dashboard/quizzes/Index.svelte": {
-    "file": "assets/Index-DRI38ZaF.js",
+    "file": "assets/Index-CHnhY7IU.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/quizzes/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js",
-      "_DashboardLayout-wh2G_6Jd.js"
+      "_dist-DWZVwsDY.js",
+      "_DashboardLayout-wZimXgWW.js"
     ]
   },
   "resources/js/pages/posts/Index.svelte": {
-    "file": "assets/Index-B4Hnpqo9.js",
+    "file": "assets/Index-CMnA4CAI.js",
     "name": "Index",
     "src": "resources/js/pages/posts/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Index-BYqQ2UvU.css"
     ]
   },
   "resources/js/pages/posts/Show.svelte": {
-    "file": "assets/Show-B6zfknDS.js",
+    "file": "assets/Show-Ccasfyia.js",
     "name": "Show",
     "src": "resources/js/pages/posts/Show.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Show-B-dCE5XM.css"
     ]
   },
   "resources/js/pages/quizzes/Index.svelte": {
-    "file": "assets/Index-CX03JBfI.js",
+    "file": "assets/Index-DsTR3khK.js",
     "name": "Index",
     "src": "resources/js/pages/quizzes/Index.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Index-BECOIq88.css"
     ]
   },
   "resources/js/pages/quizzes/Play.svelte": {
-    "file": "assets/Play-CVo8jDR5.js",
+    "file": "assets/Play-_roOYUOR.js",
     "name": "Play",
     "src": "resources/js/pages/quizzes/Play.svelte",
     "isDynamicEntry": true,
     "imports": [
-      "_dist-Dgd8OTAM.js"
+      "_dist-DWZVwsDY.js"
     ],
     "css": [
       "assets/Play-BXztZWb7.css"

@@ -70,19 +70,21 @@
                     >
                     <span class="font-title-md text-[16px]">Đoàn Sinh</span>
                 </Link>
-                <Link
-                    href="/dashboard/huynh-truong"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/huynh-truong')
-                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
-                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
-                >
-                    <span
-                        class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/huynh-truong') ? '1' : '0'};"
-                        >supervisor_account</span
+                {#if (page.props as any).auth?.is_super_admin}
+                    <Link
+                        href="/dashboard/huynh-truong"
+                        class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/huynh-truong')
+                            ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                            : 'text-on-surface-variant hover:bg-surface-container-high'}"
                     >
-                    <span class="font-title-md text-[16px]">Huynh Trưởng</span>
-                </Link>
+                        <span
+                            class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/huynh-truong') ? '1' : '0'};"
+                            >supervisor_account</span
+                        >
+                        <span class="font-title-md text-[16px]">Huynh Trưởng</span>
+                    </Link>
+                {/if}
                 <Link
                     href="/dashboard/posts"
                     class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/posts')
@@ -139,11 +141,17 @@
                 class="mt-auto pb-8 flex flex-col gap-1 border-t border-outline-variant/10 pt-4"
             >
                 <Link
-                    href="#"
-                    class="flex items-center gap-stack-md p-stack-md text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all"
+                    href="/dashboard/profile"
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url === '/dashboard/profile'
+                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
-                    <span class="material-symbols-outlined">settings</span>
-                    <span class="font-title-md text-[16px]">Cài Đặt</span>
+                    <span
+                        class="material-symbols-outlined"
+                        style="font-variation-settings: 'FILL' {page.url === '/dashboard/profile' ? '1' : '0'};"
+                        >account_circle</span
+                    >
+                    <span class="font-title-md text-[16px]">Hồ Sơ Của Tôi</span>
                 </Link>
                 <button
                     onclick={() => {

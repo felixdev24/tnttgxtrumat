@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -51,6 +52,10 @@ class HuynhTruongController extends Controller
 
     public function store(Request $request)
     {
+        if (! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
@@ -73,6 +78,10 @@ class HuynhTruongController extends Controller
 
     public function update(Request $request, User $user)
     {
+        if (! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
+        }
+
         if ($user->role !== 'huynh_truong') {
             abort(403);
         }
@@ -96,6 +105,10 @@ class HuynhTruongController extends Controller
 
     public function destroy(User $user)
     {
+        if (! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
+        }
+
         if ($user->role !== 'huynh_truong') {
             abort(403);
         }
@@ -107,6 +120,10 @@ class HuynhTruongController extends Controller
 
     public function resetPassword(User $user)
     {
+        if (! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
+        }
+
         if ($user->role !== 'huynh_truong') {
             abort(403);
         }

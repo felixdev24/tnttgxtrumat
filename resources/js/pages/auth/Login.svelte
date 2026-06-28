@@ -7,6 +7,8 @@
         remember: false,
     });
 
+    let showPassword = $state(false);
+
     function handleSubmit(e: Event) {
         e.preventDefault();
         form.post('/login');
@@ -86,11 +88,22 @@
                     >
                     <input
                         id="login-password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="••••••••"
                         bind:value={form.password}
-                        class="login-input w-full rounded-xl border py-4 pr-5 pl-14 text-base outline-none transition-all"
+                        class="login-input w-full rounded-xl border py-4 px-14 text-base outline-none transition-all"
                     />
+                    <button
+                        type="button"
+                        onclick={() => (showPassword = !showPassword)}
+                        class="absolute top-1/2 right-4 -translate-y-1/2 p-1 text-[#42474d] hover:text-[#191c1d] dark:text-[#e4beba] dark:hover:text-[#e5e2e1] transition-colors flex items-center justify-center"
+                        tabindex="-1"
+                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    >
+                        <span class="material-symbols-outlined text-[20px]">
+                            {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                    </button>
                 </div>
             </div>
 

@@ -7,18 +7,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckHuynhTruong
+class CheckSuperAdmin
 {
     /**
      * Handle an incoming request.
-     * Allows both huynh_truong and super_admin roles into the dashboard.
+     * Only allows super_admin role to proceed.
      *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::check() || ! in_array(Auth::user()->role, ['huynh_truong', 'super_admin'])) {
-            return redirect('/');
+        if (! Auth::check() || Auth::user()->role !== 'super_admin') {
+            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
         }
 
         return $next($request);

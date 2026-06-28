@@ -88,6 +88,16 @@ class User extends Authenticatable
         return Str::uuid()->toString();
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function scopeSuperAdmin($query)
+    {
+        return $query->where('role', 'super_admin');
+    }
+
     protected static function booted(): void
     {
         static::creating(function (User $user) {

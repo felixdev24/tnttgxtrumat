@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
 use App\Models\QuizWeek;
+use App\Models\UserQuizAnswer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,18 +15,18 @@ class PublicQuizController extends Controller
     {
         // Fetch all weeks to allow selection
         $allWeeks = QuizWeek::withCount(['questions' => function ($query) {
-                $query->where('is_active', true);
-            }])
+            $query->where('is_active', true);
+        }])
             ->orderByDesc('year')
             ->orderByDesc('month')
             ->orderByDesc('week_number')
             ->get()
             ->map(fn (QuizWeek $week) => [
-                'id' => $week->id,
-                'label' => $week->getLabel(),
-                'theme' => $week->theme,
-                'questions_count' => $week->questions_count,
-            ]);
+            'id' => $week->id,
+            'label' => $week->getLabel(),
+            'theme' => $week->theme,
+            'questions_count' => $week->questions_count,
+        ]);
 
         return Inertia::render('quizzes/Index', [
             'allWeeks' => $allWeeks,
@@ -52,7 +54,7 @@ class PublicQuizController extends Controller
                 'image_path' => $q->image_path ? \Storage::url($q->image_path) : null,
                 'points' => $q->points,
                 'difficulty' => $q->difficulty,
-            ])
+            ]),
         ];
 
         // Mock leaderboard data
@@ -77,10 +79,10 @@ class PublicQuizController extends Controller
         ]);
 
         $user = $request->user();
-        $question = \App\Models\Question::findOrFail($validated['question_id']);
+        $question = Question::findOrFail($validated['question_id']);
 
         // Check if the user already answered this question correctly
-        $existingCorrectAnswer = \App\Models\UserQuizAnswer::where('user_id', $user->id)
+        $existingCorrectAnswer = UserQuizAnswer::where('user_id', $user->id)
             ->where('question_id', $question->id)
             ->where('is_correct', true)
             ->first();
@@ -94,13 +96,13 @@ class PublicQuizController extends Controller
         }
 
         // Delete previous wrong answers so the user can retry
-        \App\Models\UserQuizAnswer::where('user_id', $user->id)
+        UserQuizAnswer::where('user_id', $user->id)
             ->where('question_id', $question->id)
             ->where('is_correct', false)
             ->delete();
 
         $isCorrect = false;
-        
+
         // Simple exact match evaluation for now. Could be improved for fill-in-the-blank types.
         if (strcasecmp(trim($validated['answer']), trim($question->correct_answer)) === 0) {
             $isCorrect = true;
@@ -108,7 +110,7 @@ class PublicQuizController extends Controller
 
         $pointsAwarded = $isCorrect ? $question->points : 0;
 
-        $userAnswer = \App\Models\UserQuizAnswer::create([
+        $userAnswer = UserQuizAnswer::create([
             'user_id' => $user->id,
             'question_id' => $question->id,
             'answer' => $validated['answer'],

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_correct')->default(false);
             $table->integer('points_awarded')->default(0);
             $table->timestamps();
-            
+
             // A user can answer a question only once (optional, but good for scoring)
             $table->unique(['user_id', 'question_id']);
         });

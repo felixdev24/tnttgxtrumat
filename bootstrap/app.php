@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckHuynhTruong;
+use App\Http\Middleware\CheckSuperAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'huynh_truong' => CheckHuynhTruong::class,
+            'super_admin' => CheckSuperAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

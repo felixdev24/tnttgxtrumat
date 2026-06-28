@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                'is_super_admin' => $request->user() ? $request->user()->isSuperAdmin() : false,
             ],
         ];
     }
