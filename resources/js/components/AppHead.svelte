@@ -38,7 +38,7 @@
     const filteredNavItems = $derived(
         navItems.filter((item) => {
             if (item.href === '/dashboard') {
-                return page.props.auth.user && page.props.auth.user.role === 'huynh_truong';
+                return page.props.auth.user && ['huynh_truong', 'super_admin'].includes(page.props.auth.user.role);
             }
             return true;
         }),
@@ -302,7 +302,7 @@
                 <div
                     class="mt-4 space-y-3 rounded-xl bg-gray-50 p-4 text-sm dark:bg-zinc-800/50"
                 >
-                    {#if page.props.auth.user.role === 'huynh_truong'}
+                    {#if ['huynh_truong', 'super_admin'].includes(page.props.auth.user.role)}
                         <div
                             class="flex justify-between border-b border-gray-200 pb-2 dark:border-zinc-700"
                         >
