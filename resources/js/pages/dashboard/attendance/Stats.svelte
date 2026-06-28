@@ -2,12 +2,12 @@
     import DashboardLayout from '../../../layouts/DashboardLayout.svelte';
     import { Link, router, page } from '@inertiajs/svelte';
 
-    let { topMembers, gradeLevels, filters }: { topMembers: any[]; gradeLevels: string[]; filters: any } = $props();
+    let { topMembers, classes, filters }: { topMembers: any[]; classes: any[]; filters: any } = $props();
 
-    let selectedGrade = $state(filters.grade_level || '');
+    let selectedClass = $state(filters.tntt_class_id || '');
 
     function applyFilters() {
-        router.get('/dashboard/attendance/stats', { grade_level: selectedGrade }, { preserveState: true });
+        router.get('/dashboard/attendance/stats', { tntt_class_id: selectedClass }, { preserveState: true });
     }
 </script>
 
@@ -30,6 +30,13 @@
                     <h1 class="font-headline-lg text-headline-lg text-primary">Thống Kê Điểm Danh</h1>
                     <p class="text-on-surface-variant mt-1 text-sm">Theo dõi chuyên cần và xếp hạng đoàn sinh.</p>
                 </div>
+                <a
+                    href="/dashboard/attendance/stats/export{selectedClass ? '?tntt_class_id=' + selectedClass : ''}"
+                    class="duolingo-shadow-primary bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-title-md text-[14px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md"
+                >
+                    <span class="material-symbols-outlined text-[20px]">download</span>
+                    Xuất Báo Cáo Chuyên Cần
+                </a>
             </div>
 
             <!-- Filters -->
@@ -37,13 +44,13 @@
                 <h2 class="font-title-md text-on-surface">Lọc dữ liệu</h2>
                 <div class="w-full md:w-64">
                     <select 
-                        bind:value={selectedGrade}
+                        bind:value={selectedClass}
                         onchange={applyFilters}
                         class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-sm font-label-bold"
                     >
                         <option value="">Tất cả các lớp</option>
-                        {#each gradeLevels as grade}
-                            <option value={grade}>{grade}</option>
+                        {#each classes as cls}
+                            <option value={cls.id}>{cls.name}</option>
                         {/each}
                     </select>
                 </div>
@@ -54,7 +61,7 @@
                 <div class="glass-card rounded-2xl shadow-md p-6 border border-outline-variant/10">
                     <div class="flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-amber-500 text-[28px]">social_leaderboard</span>
-                        <h2 class="font-title-lg text-on-surface">Top Điểm Danh Đều Nhất</h2>
+                        <h2 class="font-title-lg text-on-surface">Bảng Xếp Hạng Chuyên Cần</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -69,7 +76,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="font-label-bold text-on-surface">{record.user.name}</h4>
-                                    <p class="text-xs text-outline-variant">Lớp: {record.user.grade_level}</p>
+                                    <p class="text-xs text-outline-variant">Lớp: {record.user.tntt_class?.name || 'Chưa xếp lớp'}</p>
                                 </div>
                                 <div class="text-right">
                                     <span class="font-bold text-emerald-600">{record.count}</span>

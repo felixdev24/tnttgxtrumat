@@ -16,10 +16,10 @@
         qr_token: string | null;
     }
 
-    let { doanSinhs, stats, filters }: { doanSinhs: any; stats: any; filters: any } = $props();
+    let { doanSinhs, stats, filters, classes }: { doanSinhs: any; stats: any; filters: any; classes: any[] } = $props();
 
     let search = $state(filters.search || '');
-    let selectedGrade = $state(filters.grade_level || '');
+    let selectedClass = $state(filters.tntt_class_id || '');
 
     // Modal state
     let showModal = $state(false);
@@ -40,7 +40,7 @@
         id: null as number | null,
         name: '',
         username: '',
-        grade_level: '',
+        tntt_class_id: '',
         branch: '',
         dob: '',
         phone: '',
@@ -49,7 +49,7 @@
     });
 
     function applyFilters() {
-        router.get('/dashboard/doan-sinh', { search, grade_level: selectedGrade }, { preserveState: true });
+        router.get('/dashboard/doan-sinh', { search, tntt_class_id: selectedClass }, { preserveState: true });
     }
 
     let filterTimeout: any;
@@ -71,7 +71,7 @@
         form.id = ds.id;
         form.name = ds.name;
         form.username = ds.username;
-        form.grade_level = ds.grade_level || '';
+        form.tntt_class_id = ds.tntt_class_id || '';
         form.branch = ds.branch || '';
         form.dob = ds.dob ? ds.dob.split('T')[0] : '';
         form.phone = ds.phone || '';
@@ -102,6 +102,14 @@
     function deleteDoanSinh(ds: DoanSinh) {
         if (confirm(`Bạn có chắc muốn xóa đoàn sinh: "${ds.name}"?`)) {
             router.delete(`/dashboard/doan-sinh/${ds.id}`, {
+                preserveScroll: true,
+            });
+        }
+    }
+
+    function resetPasswordDoanSinh(ds: DoanSinh) {
+        if (confirm(`Bạn có chắc muốn đặt lại mật khẩu về mặc định (password) cho: "${ds.name}"?`)) {
+            router.post(`/dashboard/doan-sinh/${ds.id}/reset-password`, {}, {
                 preserveScroll: true,
             });
         }
@@ -196,13 +204,13 @@
                 </div>
                 <div class="w-full md:w-64">
                     <select 
-                        bind:value={selectedGrade}
+                        bind:value={selectedClass}
                         onchange={applyFilters}
                         class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-sm font-label-bold"
                     >
                         <option value="">Tất cả các lớp</option>
-                        {#each gradeLevels as grade}
-                            <option value={grade}>{grade} ({stats.by_grade[grade] || 0})</option>
+                        {#each classes as cls}
+                            <option value={cls.id}>{cls.name} ({stats.by_grade[cls.id] || 0})</option>
                         {/each}
                     </select>
                 </div>
@@ -228,8 +236,8 @@
                                     <div class="text-xs text-outline">@{ds.username}</div>
                                 </td>
                                 <td class="p-4">
-                                    <div class="font-medium text-primary">{ds.grade_level || 'Chưa xếp lớp'}</div>
-                                    <div class="text-xs text-outline">{ds.branch || ''}</div>
+                                    <div class="font-medium text-primary">{ds.tntt_class ? ds.tntt_class.name : 'Chưa xếp lớp'}</div>
+                                    <div class="text-xs text-outline">{ds.tntt_class ? ds.tntt_class.branch : (ds.branch || '')}</div>
                                 </td>
                                 <td class="p-4 text-on-surface-variant">
                                     {#if ds.phone}
@@ -250,6 +258,15 @@
                                 </td>
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        {#if (page.props as any).auth?.is_super_admin}
+                                            <button 
+                                                onclick={() => resetPasswordDoanSinh(ds)}
+                                                class="p-2 hover:bg-tertiary-container rounded-lg text-tertiary transition-all"
+                                                title="Đặt lại mật khẩu"
+                                            >
+                                                <span class="material-symbols-outlined block text-[18px]">key</span>
+                                            </button>
+                                        {/if}
                                         <button 
                                             onclick={() => openEditModal(ds)}
                                             class="p-2 hover:bg-surface-variant rounded-lg text-primary transition-all"
@@ -331,13 +348,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Lớp Giáo Lý <span class="text-error">*</span></label>
-                            <select bind:value={form.grade_level} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
+                            <select bind:value={form.tntt_class_id} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
                                 <option value="" disabled>Chọn lớp...</option>
-                                {#each gradeLevels as grade}
-                                    <option value={grade}>{grade}</option>
+                                {#each classes as cls}
+                                    <option value={cls.id}>{cls.name}</option>
                                 {/each}
                             </select>
-                            {#if form.errors.grade_level}<p class="text-xs text-error mt-1">{form.errors.grade_level}</p>{/if}
+                            {#if form.errors.tntt_class_id}<p class="text-xs text-error mt-1">{form.errors.tntt_class_id}</p>{/if}
                         </div>
                         <div>
                             <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ngành <span class="text-error">*</span></label>

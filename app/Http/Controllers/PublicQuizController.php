@@ -22,11 +22,11 @@ class PublicQuizController extends Controller
             ->orderByDesc('week_number')
             ->get()
             ->map(fn (QuizWeek $week) => [
-            'id' => $week->id,
-            'label' => $week->getLabel(),
-            'theme' => $week->theme,
-            'questions_count' => $week->questions_count,
-        ]);
+                'id' => $week->id,
+                'label' => $week->getLabel(),
+                'theme' => $week->theme,
+                'questions_count' => $week->questions_count,
+            ]);
 
         return Inertia::render('quizzes/Index', [
             'allWeeks' => $allWeeks,
@@ -57,17 +57,39 @@ class PublicQuizController extends Controller
             ]),
         ];
 
-        // Mock leaderboard data
-        $leaderboard = [
-            ['rank' => 1, 'name' => 'Maria Lan', 'score' => 2400, 'is_me' => false],
-            ['rank' => 2, 'name' => 'Phê-rô Nam', 'score' => 1950, 'is_me' => false],
-            ['rank' => 3, 'name' => 'Tê-rê-sa Hân', 'score' => 1800, 'is_me' => false],
-            ['rank' => 7, 'name' => 'Bạn', 'score' => 1250, 'is_me' => true],
-        ];
+        // Real leaderboard data
+        $leaderboardQuery = UserQuizAnswer::where('is_correct', true)
+            ->selectRaw('user_id, SUM(points_awarded) as score')
+            ->groupBy('user_id')
+            ->orderByDesc('score')
+            ->with('user:id,name')
+            ->get();
+
+        $leaderboard = [];
+        $rank = 1;
+        $userTotalScore = 0;
+        $userId = $request->user()?->id;
+
+        foreach ($leaderboardQuery as $item) {
+            if ($item->user_id == $userId) {
+                $userTotalScore = $item->score;
+            }
+
+            if ($rank <= 10) {
+                $leaderboard[] = [
+                    'rank' => $rank,
+                    'name' => $item->user->name ?? 'Người dùng',
+                    'score' => (int) $item->score,
+                    'is_me' => $item->user_id == $userId,
+                ];
+            }
+            $rank++;
+        }
 
         return Inertia::render('quizzes/Play', [
             'quizWeek' => $quizData,
             'leaderboard' => $leaderboard,
+            'userTotalScore' => (int) $userTotalScore,
         ]);
     }
 
@@ -123,6 +145,49 @@ class PublicQuizController extends Controller
             'is_correct' => $isCorrect,
             'points_awarded' => $pointsAwarded,
             'correct_answer' => $question->correct_answer,
+        ]);
+    }
+
+    public function leaderboard(Request $request): Response
+    {
+        // Real leaderboard data
+        $leaderboardQuery = UserQuizAnswer::where('is_correct', true)
+            ->selectRaw('user_id, SUM(points_awarded) as score')
+            ->groupBy('user_id')
+            ->orderByDesc('score')
+            ->with('user:id,name,role,avatar,branch')
+            ->get();
+
+        $leaderboard = [];
+        $rank = 1;
+        $userTotalScore = 0;
+        $userRank = null;
+        $userId = $request->user()?->id;
+
+        foreach ($leaderboardQuery as $item) {
+            $isMe = $item->user_id == $userId;
+            if ($isMe) {
+                $userTotalScore = $item->score;
+                $userRank = $rank;
+            }
+
+            $leaderboard[] = [
+                'rank' => $rank,
+                'name' => $item->user->name ?? 'Người dùng',
+                'role' => $item->user->role ?? null,
+                'branch' => $item->user->branch ?? null,
+                'avatar' => $item->user->avatar ? \Storage::url($item->user->avatar) : null,
+                'score' => (int) $item->score,
+                'is_me' => $isMe,
+            ];
+
+            $rank++;
+        }
+
+        return Inertia::render('quizzes/Leaderboard', [
+            'leaderboard' => $leaderboard,
+            'userTotalScore' => (int) $userTotalScore,
+            'userRank' => $userRank,
         ]);
     }
 }

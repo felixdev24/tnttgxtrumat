@@ -8,7 +8,7 @@
         session,
         csrf_token,
     }: {
-        session: { id: number; title: string; grade_level: string };
+        session: { id: number; title: string; tntt_class_id: number; tntt_class_name: string };
         csrf_token: string;
     } = $props();
 
@@ -130,7 +130,7 @@
             <div>
                 <h1 class="font-headline-lg text-headline-sm text-primary">Quét QR Điểm Danh</h1>
                 <p class="text-on-surface-variant mt-1 text-sm">
-                    Sử dụng camera để quét mã QR của đoàn sinh lớp <strong>{session.grade_level}</strong>.
+                    Sử dụng camera để quét mã QR của đoàn sinh lớp <strong>{session.tntt_class_name}</strong>.
                 </p>
             </div>
             <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl">
@@ -160,8 +160,8 @@
                                 <span class="material-symbols-outlined text-[44px] text-emerald-600 mb-1">check_circle</span>
                                 <h3 class="font-title-lg text-emerald-800">{scanResult.user.name}</h3>
                                 <p class="text-emerald-700 text-sm font-label-bold">{scanResult.message}</p>
-                                {#if scanResult.user.grade_level}
-                                    <p class="text-emerald-600 text-xs mt-1">Lớp: {scanResult.user.grade_level}</p>
+                                {#if scanResult.user.tntt_class_name}
+                                    <p class="text-emerald-600 text-xs mt-1">Lớp: {scanResult.user.tntt_class_name}</p>
                                 {/if}
                             </div>
                         {:else}
@@ -205,8 +205,8 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="font-label-bold text-on-surface truncate">{user.name}</h4>
-                                {#if user.grade_level}
-                                    <p class="text-xs text-outline-variant">Lớp: {user.grade_level}</p>
+                                {#if user.tntt_class_name}
+                                    <p class="text-xs text-outline-variant">Lớp: {user.tntt_class_name}</p>
                                 {/if}
                             </div>
                             <div class="text-xs font-bold text-emerald-600 flex items-center gap-1 flex-shrink-0">

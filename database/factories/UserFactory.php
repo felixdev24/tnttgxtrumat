@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\TnttClass;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -40,11 +41,9 @@ class UserFactory extends Factory
      */
     public function doanSinh(): static
     {
-        $gradeLevels = ['Khai Tâm 1', 'Khai Tâm 2', 'Rước Lễ 1', 'Rước Lễ 2', 'Thêm Sức 1', 'Thêm Sức 2', 'Bao Đồng 1', 'Bao Đồng 2'];
-
         return $this->state(fn (array $attributes) => [
             'role' => 'giao_ly_sinh',
-            'grade_level' => fake()->randomElement($gradeLevels),
+            'tntt_class_id' => TnttClass::factory(),
             'branch' => fake()->randomElement(['Ấu', 'Thiếu', 'Nghĩa', 'Hiệp']),
             'phone' => fake()->phoneNumber(),
             'parent_phone' => fake()->phoneNumber(),

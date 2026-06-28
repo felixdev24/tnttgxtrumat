@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TnttClass;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
@@ -25,10 +26,12 @@ it('allows huynh truong to view doan sinh list', function () {
 });
 
 it('allows huynh truong to create doan sinh', function () {
+    $class = TnttClass::factory()->create();
+
     $data = [
         'name' => 'Nguyen Van A',
         'username' => 'nguyenvana',
-        'grade_level' => 'Khai Tâm 1',
+        'tntt_class_id' => $class->id,
         'branch' => 'Ấu',
         'dob' => '2015-01-01',
     ];
@@ -40,15 +43,17 @@ it('allows huynh truong to create doan sinh', function () {
     assertDatabaseHas('users', [
         'username' => 'nguyenvana',
         'role' => 'giao_ly_sinh',
-        'grade_level' => 'Khai Tâm 1',
+        'tntt_class_id' => $class->id,
     ]);
 });
 
 it('auto generates qr_token for new doan sinh', function () {
+    $class = TnttClass::factory()->create();
+
     $data = [
         'name' => 'Nguyen Van B',
         'username' => 'nguyenvanb',
-        'grade_level' => 'Khai Tâm 1',
+        'tntt_class_id' => $class->id,
         'branch' => 'Ấu',
     ];
 
@@ -64,11 +69,13 @@ it('allows huynh truong to update doan sinh', function () {
         'name' => 'Old Name',
     ]);
 
+    $newClass = TnttClass::factory()->create();
+
     actingAs($this->huynhTruong)
         ->put("/dashboard/doan-sinh/{$doanSinh->id}", [
             'name' => 'New Name',
             'username' => $doanSinh->username,
-            'grade_level' => 'Khai Tâm 2',
+            'tntt_class_id' => $newClass->id,
             'branch' => 'Ấu',
         ])
         ->assertRedirect();
@@ -76,7 +83,7 @@ it('allows huynh truong to update doan sinh', function () {
     assertDatabaseHas('users', [
         'id' => $doanSinh->id,
         'name' => 'New Name',
-        'grade_level' => 'Khai Tâm 2',
+        'tntt_class_id' => $newClass->id,
     ]);
 });
 

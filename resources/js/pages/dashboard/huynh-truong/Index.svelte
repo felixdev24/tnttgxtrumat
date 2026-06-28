@@ -33,7 +33,7 @@
     let isEditing = $state(false);
     let showPasswordResetConfirm = $state<number | null>(null);
 
-    const allBranches = ['Ấu', 'Thiếu', 'Nghĩa', 'Hiệp'];
+    const allBranches = ['Ấu', 'Thiếu', 'Nghĩa', 'Hiệp', 'Ban Truyền Thông'];
     const ranks = [
         'Huynh Trưởng Cấp I',
         'Huynh Trưởng Cấp II',
@@ -165,7 +165,7 @@
                 {#each allBranches as branch}
                     <div class="glass-card p-5 rounded-2xl border-l-4 border-l-secondary shadow-sm">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">Ngành {branch}</span>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">{branch}</span>
                             <span class="material-symbols-outlined text-secondary opacity-80">group</span>
                         </div>
                         <p class="text-[28px] font-display-lg text-on-surface leading-tight">{stats.by_branch[branch] || 0}</p>
@@ -192,9 +192,9 @@
                         onchange={applyFilters}
                         class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-sm font-label-bold"
                     >
-                        <option value="">Tất cả các ngành</option>
+                        <option value="">Tất cả ngành / chức vụ</option>
                         {#each allBranches as branch}
-                            <option value={branch}>Ngành {branch} ({stats.by_branch[branch] || 0})</option>
+                            <option value={branch}>{branch} ({stats.by_branch[branch] || 0})</option>
                         {/each}
                     </select>
                 </div>
@@ -206,7 +206,7 @@
                     <thead>
                         <tr class="bg-surface-container-high/50 text-on-surface-variant text-sm font-label-bold">
                             <th class="p-4 border-b border-outline-variant/10">Họ & Tên</th>
-                            <th class="p-4 border-b border-outline-variant/10">Ngành / Cấp bậc</th>
+                            <th class="p-4 border-b border-outline-variant/10">Ngành / Chức vụ</th>
                             <th class="p-4 border-b border-outline-variant/10">Liên hệ</th>
                             <th class="p-4 border-b border-outline-variant/10 text-center">Năm HĐ</th>
                             <th class="p-4 border-b border-outline-variant/10 text-right">Thao tác</th>
@@ -229,7 +229,7 @@
                                 <td class="p-4">
                                     {#if ht.branch}
                                         <span class="inline-block px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold mb-1">
-                                            Ngành {ht.branch}
+                                            {ht.branch}
                                         </span>
                                     {/if}
                                     {#if ht.rank}
@@ -357,11 +357,11 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ngành <span class="text-error">*</span></label>
-                            <select bind:value={form.branch} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
-                                <option value="" disabled>Chọn ngành...</option>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ngành / Chức vụ</label>
+                            <select bind:value={form.branch} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
+                                <option value="">-- Chưa xác định --</option>
                                 {#each allBranches as branch}
-                                    <option value={branch}>Ngành {branch}</option>
+                                    <option value={branch}>{branch}</option>
                                 {/each}
                             </select>
                             {#if form.errors.branch}<p class="text-xs text-error mt-1">{form.errors.branch}</p>{/if}

@@ -2,6 +2,7 @@
 
 use App\Models\AttendanceRecord;
 use App\Models\AttendanceSession;
+use App\Models\TnttClass;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -16,13 +17,14 @@ beforeEach(function () {
 });
 
 it('allows huynh truong to create attendance session', function () {
-    User::factory()->count(3)->doanSinh()->create(['grade_level' => 'Rước Lễ 1']);
+    $class = TnttClass::factory()->create(['name' => 'Rước Lễ 1']);
+    User::factory()->count(3)->doanSinh()->create(['tntt_class_id' => $class->id]);
 
     actingAs($this->huynhTruong)
         ->post('/dashboard/attendance', [
             'title' => 'Sinh hoạt Rước Lễ 1',
             'session_date' => now()->format('Y-m-d'),
-            'grade_level' => 'Rước Lễ 1',
+            'tntt_class_id' => $class->id,
         ])
         ->assertRedirect('/dashboard/attendance');
 
@@ -34,8 +36,9 @@ it('allows huynh truong to create attendance session', function () {
 });
 
 it('allows check in via qr token', function () {
-    $session = AttendanceSession::factory()->create(['grade_level' => 'Rước Lễ 1']);
-    $doanSinh = User::factory()->doanSinh()->create(['grade_level' => 'Rước Lễ 1']);
+    $class = TnttClass::factory()->create();
+    $session = AttendanceSession::factory()->create(['tntt_class_id' => $class->id]);
+    $doanSinh = User::factory()->doanSinh()->create(['tntt_class_id' => $class->id]);
 
     // Initialize absent record
     AttendanceRecord::create([
@@ -60,8 +63,10 @@ it('allows check in via qr token', function () {
 });
 
 it('prevents check in for wrong grade level', function () {
-    $session = AttendanceSession::factory()->create(['grade_level' => 'Rước Lễ 1']);
-    $doanSinh = User::factory()->doanSinh()->create(['grade_level' => 'Khai Tâm 1']);
+    $class1 = TnttClass::factory()->create();
+    $class2 = TnttClass::factory()->create();
+    $session = AttendanceSession::factory()->create(['tntt_class_id' => $class1->id]);
+    $doanSinh = User::factory()->doanSinh()->create(['tntt_class_id' => $class2->id]);
 
     actingAs($this->huynhTruong)
         ->postJson('/dashboard/attendance/check-in', [
@@ -98,19 +103,21 @@ it('scheduled command creates weekly sessions for next sunday', function () {
     $nextSunday = Carbon::parse('2026-06-28 00:00:00');
 
     // Setup active grade levels
-    User::factory()->doanSinh()->create(['grade_level' => 'Bao Đồng 1']);
-    User::factory()->doanSinh()->create(['grade_level' => 'Bao Đồng 2']);
+    $class1 = TnttClass::factory()->create();
+    $class2 = TnttClass::factory()->create();
+    User::factory()->doanSinh()->create(['tntt_class_id' => $class1->id]);
+    User::factory()->doanSinh()->create(['tntt_class_id' => $class2->id]);
 
     Artisan::call('attendance:create-weekly');
 
     assertDatabaseHas('attendance_sessions', [
         'session_date' => $nextSunday->format('Y-m-d'),
-        'grade_level' => 'Bao Đồng 1',
+        'tntt_class_id' => $class1->id,
     ]);
 
     assertDatabaseHas('attendance_sessions', [
         'session_date' => $nextSunday->format('Y-m-d'),
-        'grade_level' => 'Bao Đồng 2',
+        'tntt_class_id' => $class2->id,
     ]);
 
     Carbon::setTestNow(); // Reset

@@ -16,7 +16,7 @@ class AttendanceSession extends Model
     protected $fillable = [
         'title',
         'session_date',
-        'grade_level',
+        'tntt_class_id',
         'notes',
         'status', // upcoming, in_progress, completed
         'created_by',
@@ -46,9 +46,14 @@ class AttendanceSession extends Model
         return $this->records()->where('status', 'absent');
     }
 
-    public function scopeByGradeLevel($query, $gradeLevel)
+    public function tnttClass(): BelongsTo
     {
-        return $query->where('grade_level', $gradeLevel);
+        return $this->belongsTo(TnttClass::class);
+    }
+
+    public function scopeByTnttClass($query, $classId)
+    {
+        return $query->where('tntt_class_id', $classId);
     }
 
     public function scopeByDateRange($query, $startDate, $endDate)

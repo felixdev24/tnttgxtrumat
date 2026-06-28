@@ -5,7 +5,7 @@
     import { onDestroy } from 'svelte';
 
     // Props from the controller
-    let { quizWeek, allWeeks, leaderboard } = $props();
+    let { quizWeek, allWeeks, leaderboard, userTotalScore } = $props();
 
     // Authentication state
     let user = $derived(page.props.auth?.user);
@@ -33,7 +33,7 @@
 
     // Derived values
     let progressPercentage = $derived(questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0);
-    let userScore = $state(user ? 1250 : 0); // Mock starting score
+    let userScore = $state(user ? userTotalScore : 0); // Real starting score
 
     // Timer and Huynh Truong controls
     let timeLeft = $state(45);
@@ -438,7 +438,7 @@
                                 </div>
                             {/each}
                         </div>
-                        <button class="w-full mt-4 text-sm text-primary font-label-bold hover:bg-primary/5 py-2 rounded-xl transition-colors">Xem tất cả</button>
+                        <Link href="/quizzes/leaderboard" class="w-full mt-4 text-sm text-primary font-label-bold hover:bg-primary/5 py-2 rounded-xl transition-colors text-center block">Xem tất cả</Link>
                     </div>
 
                     <div class="glass-card p-stack-md rounded-2xl bg-gradient-to-br from-tertiary-fixed to-white border-none shadow-md">

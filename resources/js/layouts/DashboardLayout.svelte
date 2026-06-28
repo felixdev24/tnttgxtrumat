@@ -22,12 +22,17 @@
         {#if mobileNavOpen}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div class="fixed inset-0 z-40 bg-zinc-900/50 backdrop-blur-sm md:hidden" onclick={toggleMobileNav}></div>
+            <div
+                class="fixed inset-0 z-40 bg-zinc-900/50 backdrop-blur-sm md:hidden"
+                onclick={toggleMobileNav}
+            ></div>
         {/if}
 
         <!-- SideNavBar -->
         <aside
-            class="{mobileNavOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 fixed left-0 top-[80px] bottom-0 bg-white dark:bg-zinc-900 p-6 border-r border-zinc-200 dark:border-zinc-800"
+            class="{mobileNavOpen
+                ? 'translate-x-0'
+                : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 fixed left-0 top-[80px] bottom-0 bg-white dark:bg-zinc-900 p-6 border-r border-zinc-200 dark:border-zinc-800"
         >
             <div class="flex flex-col gap-stack-sm mb-stack-lg">
                 <div class="flex items-center gap-3">
@@ -42,15 +47,20 @@
                         <h3 class="font-title-md text-label-bold text-primary">
                             Quản Trị
                         </h3>
-                        <p class="text-xs text-on-surface-variant">Liên Đoàn</p>
+                        <p class="text-xs text-on-surface-variant">Xứ Đoàn</p>
                     </div>
                 </div>
             </div>
 
-            <nav class="flex-1 flex flex-col gap-1" onclick={() => window.innerWidth < 768 && (mobileNavOpen = false)}>
+            <nav
+                class="flex-1 flex flex-col gap-1"
+                onclick={() =>
+                    window.innerWidth < 768 && (mobileNavOpen = false)}
+            >
                 <Link
                     href="/dashboard"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url === '/dashboard'
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url ===
+                    '/dashboard'
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
@@ -59,63 +69,105 @@
                 </Link>
                 <Link
                     href="/dashboard/doan-sinh"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/doan-sinh')
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/doan-sinh',
+                    )
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
                     <span
                         class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/doan-sinh') ? '1' : '0'};"
-                        >group</span
+                        style="font-variation-settings: 'FILL' {page.url.startsWith(
+                            '/dashboard/doan-sinh',
+                        )
+                            ? '1'
+                            : '0'};">group</span
                     >
                     <span class="font-title-md text-[16px]">Đoàn Sinh</span>
                 </Link>
                 {#if (page.props as any).auth?.is_super_admin}
                     <Link
                         href="/dashboard/huynh-truong"
-                        class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/huynh-truong')
+                        class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                            '/dashboard/huynh-truong',
+                        )
                             ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                             : 'text-on-surface-variant hover:bg-surface-container-high'}"
                     >
                         <span
                             class="material-symbols-outlined"
-                            style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/huynh-truong') ? '1' : '0'};"
-                            >supervisor_account</span
+                            style="font-variation-settings: 'FILL' {page.url.startsWith(
+                                '/dashboard/huynh-truong',
+                            )
+                                ? '1'
+                                : '0'};">supervisor_account</span
                         >
-                        <span class="font-title-md text-[16px]">Huynh Trưởng</span>
+                        <span class="font-title-md text-[16px]"
+                            >Huynh Trưởng</span
+                        >
                     </Link>
                 {/if}
                 <Link
                     href="/dashboard/posts"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/posts')
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/posts',
+                    )
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
                     <span
                         class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/posts') ? '1' : '0'};"
-                        >description</span
+                        style="font-variation-settings: 'FILL' {page.url.startsWith(
+                            '/dashboard/posts',
+                        )
+                            ? '1'
+                            : '0'};">description</span
                     >
                     <span class="font-title-md text-[16px]"
                         >Quản lý bài viết</span
                     >
                 </Link>
                 <Link
-                    href="/dashboard/attendance"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/attendance')
+                    href="/dashboard/tntt-classes"
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/tntt-classes',
+                    )
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
                     <span
                         class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url.startsWith('/dashboard/attendance') ? '1' : '0'};"
-                        >fact_check</span
+                        style="font-variation-settings: 'FILL' {page.url.startsWith(
+                            '/dashboard/tntt-classes',
+                        )
+                            ? '1'
+                            : '0'};">school</span
+                    >
+                    <span class="font-title-md text-[16px]">Lớp / Ngành</span>
+                </Link>
+                <Link
+                    href="/dashboard/attendance"
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/attendance',
+                    )
+                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
+                >
+                    <span
+                        class="material-symbols-outlined"
+                        style="font-variation-settings: 'FILL' {page.url.startsWith(
+                            '/dashboard/attendance',
+                        )
+                            ? '1'
+                            : '0'};">fact_check</span
                     >
                     <span class="font-title-md text-[16px]">Điểm Danh</span>
                 </Link>
                 <Link
                     href="/dashboard/quizzes"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/quizzes')
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/quizzes',
+                    )
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
@@ -126,14 +178,15 @@
                 </Link>
                 <Link
                     href="/dashboard/calendar"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith('/dashboard/calendar')
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/calendar',
+                    )
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
-                    <span class="material-symbols-outlined">calendar_month</span>
-                    <span class="font-title-md text-[16px]"
-                        >Lịch Phụng Vụ</span
+                    <span class="material-symbols-outlined">calendar_month</span
                     >
+                    <span class="font-title-md text-[16px]">Lịch Phụng Vụ</span>
                 </Link>
             </nav>
 
@@ -142,14 +195,17 @@
             >
                 <Link
                     href="/dashboard/profile"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url === '/dashboard/profile'
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url ===
+                    '/dashboard/profile'
                         ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
                         : 'text-on-surface-variant hover:bg-surface-container-high'}"
                 >
                     <span
                         class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url === '/dashboard/profile' ? '1' : '0'};"
-                        >account_circle</span
+                        style="font-variation-settings: 'FILL' {page.url ===
+                        '/dashboard/profile'
+                            ? '1'
+                            : '0'};">account_circle</span
                     >
                     <span class="font-title-md text-[16px]">Hồ Sơ Của Tôi</span>
                 </Link>
@@ -169,11 +225,19 @@
 
         <main class="flex-1 md:ml-64 pt-4 md:pt-8 flex flex-col min-w-0">
             <!-- Mobile Dashboard Menu Toggle -->
-            <div class="md:hidden flex items-center gap-3 px-4 pb-4 border-b border-outline-variant/10 mb-4 sticky top-[80px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md z-30">
-                <button onclick={toggleMobileNav} class="p-2 -ml-2 rounded-xl text-on-surface hover:bg-surface-variant transition-colors" aria-label="Mở menu Dashboard">
+            <div
+                class="md:hidden flex items-center gap-3 px-4 pb-4 border-b border-outline-variant/10 mb-4 sticky top-[80px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md z-30"
+            >
+                <button
+                    onclick={toggleMobileNav}
+                    class="p-2 -ml-2 rounded-xl text-on-surface hover:bg-surface-variant transition-colors"
+                    aria-label="Mở menu Dashboard"
+                >
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <h2 class="font-title-md text-lg text-primary">Menu Chức Năng</h2>
+                <h2 class="font-title-md text-lg text-primary">
+                    Menu Chức Năng
+                </h2>
             </div>
 
             <div class="px-0 sm:px-0">
@@ -191,7 +255,7 @@
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     @media (prefers-color-scheme: dark) {
         :global(.dark .glass-card) {
             background: rgba(24, 24, 27, 0.75); /* zinc-900 */

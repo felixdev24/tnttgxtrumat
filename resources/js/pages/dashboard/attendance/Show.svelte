@@ -50,7 +50,7 @@
                 <div>
                     <div class="flex items-center gap-3 mb-2">
                         <h1 class="font-headline-lg text-headline-sm text-on-surface">{session.title}</h1>
-                        <span class="px-2 py-1 text-xs font-bold rounded-md bg-secondary-container text-on-secondary-container">Lớp {session.grade_level}</span>
+                        <span class="px-2 py-1 text-xs font-bold rounded-md bg-secondary-container text-on-secondary-container">Lớp {session.tntt_class?.name || 'Không rõ'}</span>
                         {#if session.status === 'completed'}
                             <span class="px-2 py-1 text-xs font-bold rounded-md bg-emerald-100 text-emerald-800">Hoàn tất</span>
                         {:else if session.status === 'in_progress'}
@@ -82,6 +82,14 @@
                 <h2 class="font-title-lg text-on-surface">Danh sách Điểm danh ({records.length})</h2>
                 
                 <div class="flex gap-2">
+                    <a 
+                        href={`/dashboard/attendance/${session.id}/export`}
+                        class="px-5 py-2.5 rounded-xl font-label-bold bg-green-100 text-green-800 hover:bg-green-200 transition-colors flex items-center gap-2"
+                        target="_blank"
+                    >
+                        <span class="material-symbols-outlined">download</span>
+                        Xuất Excel
+                    </a>
                     {#if session.status !== 'completed'}
                         <Link 
                             href={`/dashboard/attendance/${session.id}/scan`}
@@ -139,6 +147,20 @@
                                                 </button>
                                             {/if}
                                             <div class="h-6 w-px bg-outline-variant/30 mx-1 self-center"></div>
+                                            {#if record.status === 'absent'}
+                                                <button 
+                                                    onclick={() => {
+                                                        const message = `Kính gửi phụ huynh em ${record.user.name}. Em ${record.user.name} đã vắng buổi sinh hoạt ngày ${new Date(session.session_date).toLocaleDateString('vi-VN')}. Xin vui lòng liên hệ Huynh Trưởng.`;
+                                                        navigator.clipboard.writeText(message);
+                                                        alert('Đã copy tin nhắn mẫu Zalo!');
+                                                    }} 
+                                                    class="p-1.5 rounded bg-surface-container hover:bg-blue-100 hover:text-blue-700 transition-colors" 
+                                                    title="Copy tin nhắn Zalo cho phụ huynh"
+                                                >
+                                                    <span class="material-symbols-outlined block text-[18px]">chat</span>
+                                                </button>
+                                                <div class="h-6 w-px bg-outline-variant/30 mx-1 self-center"></div>
+                                            {/if}
                                             <select 
                                                 value={record.status}
                                                 onchange={(e) => updateStatus(record.id, (e.target as HTMLSelectElement).value)}

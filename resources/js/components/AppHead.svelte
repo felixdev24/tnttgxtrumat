@@ -1,6 +1,6 @@
 <script lang="ts">
     import ThemeToggle from '@/components/ThemeToggle.svelte';
-    import { Link, usePage } from '@inertiajs/svelte';
+    import { Link, usePage, useForm } from '@inertiajs/svelte';
     import type { Snippet } from 'svelte';
 
     type NavItem = {
@@ -46,9 +46,34 @@
 
     let mobileNavOpen = $state(false);
     let profileOpen = $state(false);
+    let activeProfileTab = $state('info');
+    let showCurrentPassword = $state(false);
+    let showNewPassword = $state(false);
+    let showConfirmPassword = $state(false);
+
+    let passwordForm = useForm({
+        current_password: '',
+        password: '',
+        password_confirmation: '',
+    });
+
+    function updatePassword() {
+        passwordForm.put('/account/password', {
+            preserveScroll: true,
+            onSuccess: () => {
+                passwordForm.reset();
+                profileOpen = false;
+            }
+        });
+    }
 
     function toggleProfile() {
         profileOpen = !profileOpen;
+        if (profileOpen) {
+            activeProfileTab = 'info';
+            passwordForm.reset();
+            passwordForm.clearErrors();
+        }
     }
 
     function handleLogout() {
@@ -252,6 +277,18 @@
                         </a>
                     {/if}
                 {/each}
+
+                {#if !page.props.auth.user}
+                    <div class="mt-3 pt-3 border-t border-gray-200 dark:border-zinc-700">
+                        <Link
+                            href="/login"
+                            class="header-cta-duo flex items-center justify-center rounded-xl bg-[#c00008] px-6 py-2.5 font-['Quicksand',sans-serif] text-sm font-bold text-white transition-transform active:scale-95 dark:bg-[#c00008]"
+                            onclick={closeMobileNav}
+                        >
+                            Tham Gia
+                        </Link>
+                    </div>
+                {/if}
             </nav>
         </div>
     </header>
@@ -299,9 +336,23 @@
                     </p>
                 </div>
 
-                <div
-                    class="mt-4 space-y-3 rounded-xl bg-gray-50 p-4 text-sm dark:bg-zinc-800/50"
-                >
+                <div class="flex gap-4 mb-4 border-b border-outline-variant/20">
+                    <button
+                        onclick={() => (activeProfileTab = 'info')}
+                        class="pb-2 px-2 font-label-bold transition-all {activeProfileTab === 'info' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}"
+                    >
+                        Thông tin
+                    </button>
+                    <button
+                        onclick={() => (activeProfileTab = 'password')}
+                        class="pb-2 px-2 font-label-bold transition-all {activeProfileTab === 'password' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}"
+                    >
+                        Đổi mật khẩu
+                    </button>
+                </div>
+
+                {#if activeProfileTab === 'info'}
+                    <div class="mt-4 space-y-3 rounded-xl bg-gray-50 p-4 text-sm dark:bg-zinc-800/50">
                     {#if ['huynh_truong', 'super_admin'].includes(page.props.auth.user.role)}
                         <div
                             class="flex justify-between border-b border-gray-200 pb-2 dark:border-zinc-700"
@@ -439,6 +490,77 @@
                         Đăng Xuất
                     </button>
                 </div>
+                {:else if activeProfileTab === 'password'}
+                    <form onsubmit={(e) => { e.preventDefault(); updatePassword(); }} class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Mật khẩu hiện tại</label>
+                            <div class="relative">
+                                <input type={showCurrentPassword ? "text" : "password"} bind:value={passwordForm.current_password} required class="w-full px-4 py-2 pr-10 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 dark:bg-zinc-800" />
+                                <button
+                                    type="button"
+                                    onclick={() => (showCurrentPassword = !showCurrentPassword)}
+                                    class="absolute top-1/2 right-3 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 flex items-center justify-center transition-colors"
+                                    tabindex="-1"
+                                >
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        {showCurrentPassword ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
+                            </div>
+                            {#if passwordForm.errors.current_password}<p class="text-xs text-error mt-1">{passwordForm.errors.current_password}</p>{/if}
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Mật khẩu mới</label>
+                            <div class="relative">
+                                <input type={showNewPassword ? "text" : "password"} bind:value={passwordForm.password} required minlength="8" class="w-full px-4 py-2 pr-10 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 dark:bg-zinc-800" />
+                                <button
+                                    type="button"
+                                    onclick={() => (showNewPassword = !showNewPassword)}
+                                    class="absolute top-1/2 right-3 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 flex items-center justify-center transition-colors"
+                                    tabindex="-1"
+                                >
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        {showNewPassword ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
+                            </div>
+                            {#if passwordForm.errors.password}<p class="text-xs text-error mt-1">{passwordForm.errors.password}</p>{/if}
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Xác nhận mật khẩu mới</label>
+                            <div class="relative">
+                                <input type={showConfirmPassword ? "text" : "password"} bind:value={passwordForm.password_confirmation} required minlength="8" class="w-full px-4 py-2 pr-10 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 dark:bg-zinc-800" />
+                                <button
+                                    type="button"
+                                    onclick={() => (showConfirmPassword = !showConfirmPassword)}
+                                    class="absolute top-1/2 right-3 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 flex items-center justify-center transition-colors"
+                                    tabindex="-1"
+                                >
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        {showConfirmPassword ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-error-container/20 border border-error-container rounded-xl text-xs text-error flex items-center gap-2 mt-2">
+                            <span class="material-symbols-outlined text-[18px]">warning</span>
+                            Sẽ tự động đăng xuất.
+                        </div>
+
+                        <div class="mt-6 flex justify-end gap-3">
+                            <button
+                                type="submit"
+                                disabled={passwordForm.processing}
+                                class="w-full rounded-xl font-label-bold bg-primary px-4 py-2.5 text-on-primary hover:brightness-110 active:scale-95 transition-all shadow-sm disabled:opacity-50"
+                            >
+                                Đổi mật khẩu
+                            </button>
+                        </div>
+                    </form>
+                {/if}
             </div>
         </div>
     {/if}

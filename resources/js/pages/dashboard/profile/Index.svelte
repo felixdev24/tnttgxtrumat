@@ -8,6 +8,7 @@
 
     const infoForm = useForm({
         name: user.name,
+        username: user.username,
         email: user.email || '',
         phone: user.phone || '',
         dob: user.dob ? user.dob.split('T')[0] : '',
@@ -91,10 +92,18 @@
             <div class="glass-card rounded-2xl shadow-md p-6">
                 {#if activeTab === 'info'}
                     <form onsubmit={(e) => { e.preventDefault(); updateInfo(); }} class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Họ & Tên</label>
-                            <input type="text" bind:value={infoForm.name} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
-                            {#if infoForm.errors.name}<p class="text-xs text-error mt-1">{infoForm.errors.name}</p>{/if}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Họ & Tên</label>
+                                <input type="text" bind:value={infoForm.name} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                                {#if infoForm.errors.name}<p class="text-xs text-error mt-1">{infoForm.errors.name}</p>{/if}
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Username</label>
+                                <input type="text" bind:value={infoForm.username} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                                {#if infoForm.errors.username}<p class="text-xs text-error mt-1">{infoForm.errors.username}</p>{/if}
+                            </div>
                         </div>
 
                         <div>

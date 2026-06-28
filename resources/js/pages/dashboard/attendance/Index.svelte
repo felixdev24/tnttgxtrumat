@@ -5,17 +5,18 @@
     interface AttendanceSession {
         id: number;
         title: string;
+        tntt_class_id: number;
+        tntt_class?: { name: string };
         session_date: string;
-        grade_level: string;
         notes: string | null;
         status: 'upcoming' | 'in_progress' | 'completed';
         total_records: number;
         present_records: number;
     }
 
-    let { sessions, stats, gradeLevels, filters }: { sessions: any; stats: any; gradeLevels: string[]; filters: any } = $props();
+    let { sessions, stats, classes, filters }: { sessions: any; stats: any; classes: any[]; filters: any } = $props();
 
-    let selectedGrade = $state(filters.grade_level || '');
+    let selectedClass = $state(filters.tntt_class_id || '');
 
     // Modal state
     let showModal = $state(false);
@@ -25,13 +26,13 @@
         id: null as number | null,
         title: '',
         session_date: '',
-        grade_level: '',
+        tntt_class_id: '',
         notes: '',
         status: 'upcoming' as 'upcoming' | 'in_progress' | 'completed',
     });
 
     function applyFilters() {
-        router.get('/dashboard/attendance', { grade_level: selectedGrade }, { preserveState: true });
+        router.get('/dashboard/attendance', { tntt_class_id: selectedClass }, { preserveState: true });
     }
 
     function openAddModal() {
@@ -48,7 +49,7 @@
         form.id = session.id;
         form.title = session.title;
         form.session_date = session.session_date.split('T')[0];
-        form.grade_level = session.grade_level;
+        form.tntt_class_id = session.tntt_class_id;
         form.notes = session.notes || '';
         form.status = session.status;
         showModal = true;
@@ -171,13 +172,13 @@
                 <h2 class="font-title-md text-on-surface">Danh sách phiên</h2>
                 <div class="w-full md:w-64">
                     <select 
-                        bind:value={selectedGrade}
+                        bind:value={selectedClass}
                         onchange={applyFilters}
                         class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-sm font-label-bold"
                     >
                         <option value="">Tất cả các lớp</option>
-                        {#each gradeLevels as grade}
-                            <option value={grade}>{grade}</option>
+                        {#each classes as cls}
+                            <option value={cls.id}>{cls.name}</option>
                         {/each}
                     </select>
                 </div>
@@ -210,7 +211,7 @@
                                     </Link>
                                     <div class="flex items-center gap-2 mt-1">
                                         <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container">
-                                            Lớp: {session.grade_level}
+                                            Lớp: {session.tntt_class?.name || 'Không rõ'}
                                         </span>
                                         {#if session.notes}
                                             <span class="text-xs text-outline-variant truncate max-w-xs">{session.notes}</span>
@@ -327,16 +328,16 @@
                         <div>
                             <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Lớp <span class="text-error">*</span></label>
                             {#if isEditing}
-                                <input type="text" value={form.grade_level} disabled class="w-full px-4 py-2 bg-surface-container-high rounded-xl border-none outline-none text-outline-variant" />
+                                <input type="text" value={classes.find(c => c.id === form.tntt_class_id)?.name || ''} disabled class="w-full px-4 py-2 bg-surface-container-high rounded-xl border-none outline-none text-outline-variant" />
                             {:else}
-                                <select bind:value={form.grade_level} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
-                                    <option value="" disabled>Chọn lớp...</option>
-                                    {#each gradeLevels as grade}
-                                        <option value={grade}>{grade}</option>
+                                <select bind:value={form.tntt_class_id} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
+                                    <option value="" disabled>Chọn lớp điểm danh...</option>
+                                    {#each classes as cls}
+                                        <option value={cls.id}>{cls.name}</option>
                                     {/each}
                                 </select>
                             {/if}
-                            {#if form.errors.grade_level}<p class="text-xs text-error mt-1">{form.errors.grade_level}</p>{/if}
+                            {#if form.errors.tntt_class_id}<p class="text-xs text-error mt-1">{form.errors.tntt_class_id}</p>{/if}
                         </div>
                     </div>
 

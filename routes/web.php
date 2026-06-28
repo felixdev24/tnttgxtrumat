@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\AttendanceController;
 use App\Http\Controllers\Dashboard\CalendarController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Dashboard\PostCategoryController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\Dashboard\QuizController;
+use App\Http\Controllers\Dashboard\TnttClassController;
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicQuizController;
 use App\Models\CalendarEvent;
@@ -37,8 +39,10 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::put('/account/password', [AccountController::class, 'updatePassword'])->middleware('auth')->name('account.password.update');
 
 Route::get('/quizzes', [PublicQuizController::class, 'index'])->name('quizzes.index');
+Route::get('/quizzes/leaderboard', [PublicQuizController::class, 'leaderboard'])->name('quizzes.leaderboard');
 Route::get('/quizzes/{quizWeek}', [PublicQuizController::class, 'play'])->name('quizzes.play');
 Route::post('/quizzes/answer', [PublicQuizController::class, 'submitAnswer'])->middleware('auth')->name('quizzes.answer');
 
@@ -63,6 +67,12 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
     Route::post('/posts/categories', [PostCategoryController::class, 'store'])->name('dashboard.posts.categories.store');
     Route::put('/posts/categories/{category}', [PostCategoryController::class, 'update'])->name('dashboard.posts.categories.update');
     Route::delete('/posts/categories/{category}', [PostCategoryController::class, 'destroy'])->name('dashboard.posts.categories.destroy');
+
+    // Tntt Classes
+    Route::get('/tntt-classes', [TnttClassController::class, 'index'])->name('dashboard.tntt-classes.index');
+    Route::post('/tntt-classes', [TnttClassController::class, 'store'])->name('dashboard.tntt-classes.store');
+    Route::put('/tntt-classes/{tnttClass}', [TnttClassController::class, 'update'])->name('dashboard.tntt-classes.update');
+    Route::delete('/tntt-classes/{tnttClass}', [TnttClassController::class, 'destroy'])->name('dashboard.tntt-classes.destroy');
 
     // Quizzes
     Route::get('/quizzes', [QuizController::class, 'index'])->name('dashboard.quizzes.index');
@@ -96,11 +106,13 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
         Route::put('/huynh-truong/{user}', [HuynhTruongController::class, 'update'])->name('dashboard.huynh-truong.update');
         Route::delete('/huynh-truong/{user}', [HuynhTruongController::class, 'destroy'])->name('dashboard.huynh-truong.destroy');
         Route::post('/huynh-truong/{user}/reset-password', [HuynhTruongController::class, 'resetPassword'])->name('dashboard.huynh-truong.reset-password');
+        Route::post('/doan-sinh/{user}/reset-password', [DoanSinhController::class, 'resetPassword'])->name('dashboard.doan-sinh.reset-password');
     });
 
     // Điểm Danh
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('dashboard.attendance.index');
     Route::get('/attendance/stats', [AttendanceController::class, 'stats'])->name('dashboard.attendance.stats');
+    Route::get('/attendance/stats/export', [AttendanceController::class, 'exportStats'])->name('dashboard.attendance.stats.export');
     Route::get('/attendance/create', [AttendanceController::class, 'create'])->name('dashboard.attendance.create');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('dashboard.attendance.store');
     Route::get('/attendance/{session}', [AttendanceController::class, 'show'])->name('dashboard.attendance.show');
@@ -109,6 +121,7 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
     Route::get('/attendance/{session}/scan', [AttendanceController::class, 'scan'])->name('dashboard.attendance.scan');
     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('dashboard.attendance.check-in');
     Route::post('/attendance/{session}/manual', [AttendanceController::class, 'manualCheckIn'])->name('dashboard.attendance.manual-check-in');
+    Route::get('/attendance/{session}/export', [AttendanceController::class, 'export'])->name('dashboard.attendance.export');
 });
 
 Route::fallback(function () {

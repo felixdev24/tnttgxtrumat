@@ -1,42 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Inertia\Response;
 
-class ProfileController extends Controller
+class AccountController extends Controller
 {
-    public function show(): Response
-    {
-        return Inertia::render('dashboard/profile/Index', [
-            'user' => Auth::user(),
-        ]);
-    }
-
-    public function update(Request $request)
-    {
-        $user = Auth::user();
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('users')->ignore($user->id)],
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|string|max:20',
-            'dob' => 'nullable|date',
-            'address' => 'nullable|string|max:500',
-        ]);
-
-        $user->update($validated);
-
-        return redirect()->back()->with('success', 'Cập nhật thông tin thành công!');
-    }
-
     public function updatePassword(Request $request)
     {
         $request->validate([

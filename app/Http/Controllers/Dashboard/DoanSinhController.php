@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\TnttClass;
 use App\Models\User;
+use chillerlan\QRCode\Common\EccLevel;
+use chillerlan\QRCode\Output\QRMarkupSVG;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,10 +19,10 @@ class DoanSinhController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::doanSinh();
+        $query = User::doanSinh()->with('tnttClass');
 
-        if ($request->filled('grade_level')) {
-            $query->where('grade_level', $request->grade_level);
+        if ($request->filled('tntt_class_id')) {
+            $query->where('tntt_class_id', $request->tntt_class_id);
         }
 
         if ($request->filled('search')) {
@@ -28,21 +33,24 @@ class DoanSinhController extends Controller
             });
         }
 
-        $doanSinhs = $query->orderBy('grade_level')->orderBy('name')->paginate(20)->withQueryString();
+        $doanSinhs = $query->orderBy('tntt_class_id')->orderBy('name')->paginate(20)->withQueryString();
 
         $stats = [
             'total' => User::doanSinh()->count(),
             'by_grade' => User::doanSinh()
-                ->whereNotNull('grade_level')
-                ->selectRaw('grade_level, count(*) as count')
-                ->groupBy('grade_level')
-                ->pluck('count', 'grade_level'),
+                ->whereNotNull('tntt_class_id')
+                ->selectRaw('tntt_class_id, count(*) as count')
+                ->groupBy('tntt_class_id')
+                ->pluck('count', 'tntt_class_id'),
         ];
+
+        $classes = TnttClass::orderBy('branch')->orderBy('name')->get();
 
         return Inertia::render('dashboard/doan-sinh/Index', [
             'doanSinhs' => $doanSinhs,
             'stats' => $stats,
-            'filters' => $request->only(['search', 'grade_level']),
+            'classes' => $classes,
+            'filters' => $request->only(['search', 'tntt_class_id']),
         ]);
     }
 
@@ -51,8 +59,8 @@ class DoanSinhController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
-            'grade_level' => 'required|string',
-            'branch' => 'required|string',
+            'tntt_class_id' => 'required|exists:tntt_classes,id',
+            'branch' => 'nullable|string',
             'dob' => 'nullable|date',
             'phone' => 'nullable|string',
             'parent_phone' => 'nullable|string',
@@ -76,8 +84,8 @@ class DoanSinhController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'grade_level' => 'required|string',
-            'branch' => 'required|string',
+            'tntt_class_id' => 'required|exists:tntt_classes,id',
+            'branch' => 'nullable|string',
             'dob' => 'nullable|date',
             'phone' => 'nullable|string',
             'parent_phone' => 'nullable|string',
@@ -111,9 +119,35 @@ class DoanSinhController extends Controller
             $user->save();
         }
 
+        $options = new QROptions([
+            'version' => 5,
+            'outputType' => QRMarkupSVG::class,
+            'eccLevel' => EccLevel::L,
+            'addQuietzone' => true,
+            'outputBase64' => false,
+        ]);
+
+        $qrcode = new QRCode($options);
+        $svg = $qrcode->render($user->qr_token);
+
         return response()->json([
+            'svg' => $svg,
             'token' => $user->qr_token,
             'name' => $user->name,
+            'tntt_class_name' => $user->tnttClass ? $user->tnttClass->name : '',
         ]);
+    }
+
+    public function resetPassword(User $user)
+    {
+        if ($user->role !== 'giao_ly_sinh') {
+            abort(403);
+        }
+
+        $user->update([
+            'password' => Hash::make('password'),
+        ]);
+
+        return back()->with('success', 'Đã đặt lại mật khẩu thành mặc định (password).');
     }
 }

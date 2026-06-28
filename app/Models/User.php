@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -25,7 +26,7 @@ use Illuminate\Support\Str;
     'parent_phone',
     'rank',
     'years_of_activity',
-    'grade_level',
+    'tntt_class_id',
     'branch',
     'qr_token',
 ])]
@@ -68,6 +69,11 @@ class User extends Authenticatable
         return $this->hasMany(AttendanceSession::class, 'created_by');
     }
 
+    public function tnttClass(): BelongsTo
+    {
+        return $this->belongsTo(TnttClass::class);
+    }
+
     public function scopeDoanSinh($query)
     {
         return $query->where('role', 'giao_ly_sinh');
@@ -78,9 +84,9 @@ class User extends Authenticatable
         return $query->where('role', 'huynh_truong');
     }
 
-    public function scopeByGradeLevel($query, $level)
+    public function scopeByTnttClass($query, $classId)
     {
-        return $query->where('grade_level', $level);
+        return $query->where('tntt_class_id', $classId);
     }
 
     public function generateQrToken(): string
