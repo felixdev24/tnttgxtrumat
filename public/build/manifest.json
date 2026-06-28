@@ -100,7 +100,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-HlP-k8nX.js",
+    "file": "assets/app-CSIgJd4F.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -283,7 +283,7 @@
     ]
   },
   "resources/js/pages/dashboard/posts/Index.svelte": {
-    "file": "assets/Index-CfegAP4B.js",
+    "file": "assets/Index-C31so965.js",
     "name": "Index",
     "src": "resources/js/pages/dashboard/posts/Index.svelte",
     "isDynamicEntry": true,

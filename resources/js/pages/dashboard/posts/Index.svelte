@@ -195,7 +195,7 @@
                                                     <div class="flex gap-3 items-center">
                                                         <div class="w-12 h-12 rounded-lg bg-surface-container-high flex-shrink-0">
                                                             {#if post.cover_image}
-                                                                <img alt="" class="w-full h-full object-cover rounded-lg" src={post.cover_image} />
+                                                                <img alt="" class="w-full h-full object-cover rounded-lg" src="/storage/{post.cover_image}" />
                                                             {:else}
                                                                 <div class="w-full h-full flex items-center justify-center text-outline">
                                                                     <span class="material-symbols-outlined">image</span>
