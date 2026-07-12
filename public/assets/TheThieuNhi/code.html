@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ID Card - Thiếu Nhi Thánh Thể</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'church-blue': '#004a99',
+            'church-blue-light': '#f0f7ff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+<style data-purpose="card-layout">
+    /* Precise dimensions based on 72mm x 112mm outer product size */
+    :root {
+      --scale: 4.8px; /* Slightly adjusted scale to fit viewport better while maintaining 72:112 ratio */
+      --card-width: calc(72 * var(--scale));
+      --card-height: calc(112 * var(--scale));
+      /* Inner printable card area per spec: 54mm x 85mm */
+      --inner-card-width: calc(54 * var(--scale));
+      --inner-card-height: calc(85 * var(--scale));
+      /* Sidebar width calculation based on 72mm total width - 54mm inner width = 18mm total margin/sidebar space */
+      /* Usually sidebar is a fixed portion of that side space */
+      --sidebar-width: calc(13 * var(--scale));
+    }
+
+    .id-card-container {
+      width: var(--card-width);
+      height: var(--card-height);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      border-radius: calc(3.5 * var(--scale));
+    }
+
+    /* Vertical text rotation for the side bar */
+    .vertical-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      letter-spacing: 0.2em;
+    }
+
+    /* Card Size Proportion (54x85mm) */
+    .inner-card-area {
+      width: var(--inner-card-width);
+      height: var(--inner-card-height);
+      background: #fdfdfd;
+      border: 1px solid #e5e7eb;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Info Field Styling - tighter padding to fit everything */
+    .info-field {
+      background-color: #f9fafb;
+      border-bottom: 1.5px solid #004a99;
+      border-radius: 2px 2px 0 0;
+      padding: 0.2rem 0.4rem;
+      transition: all 0.2s ease;
+    }
+  </style>
+<style data-purpose="typography">
+    .label-text {
+      font-size: 0.55rem;
+      color: #6b7280;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .main-title {
+      color: #004a99;
+      font-weight: 800;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-slate-200 flex items-center justify-center min-h-screen p-4 font-sans">
+<!-- BEGIN: ID Card Body -->
+<div class="id-card-container bg-white flex">
+<!-- BEGIN: Main Content Area (Adjusted padding and spacing to fit labels) -->
+<main class="flex-grow p-4 flex flex-col h-full relative" data-purpose="card-main-content">
+<!-- Inner card container (54x85mm logic applied within flex layout) -->
+<div class="flex flex-col h-full">
+<!-- QR Code Area - Sized to leave room for fields below -->
+<section class="flex justify-center mb-3" data-purpose="student-photo">
+<div class="w-full aspect-[54/45] flex items-center justify-center rounded-xl overflow-hidden shadow-inner bg-gray-50 border border-gray-100">
+<img alt="QR Code" class="w-3/4 h-3/4 object-contain opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFHkbKpfA12ja0YXvwjn7WXKf7gAdHMskRhXjgKYPytLLq-ZOJZmXSKiZqcrY3o5vLskhBFUrZOUeCXfAZPxruxC6rWNtCU-OyxOfadqE3VA-tYV-_g94manDThXozfk32qUMJ2MovZIwU3ZQFZJwuz7W3cjICDgUwn_03zERZqZUgitys7hPBSjH6sJVkvDyT0XRDL6-4LOgpqfmZ3mThG3LOvIZvQDGN3iXkW0f0eJroNpqUmJ5_"/>
+</div>
+</section>
+<!-- Member Information Fields - Compacted to ensure visibility -->
+<section class="space-y-2 flex-grow" data-purpose="member-info">
+<!-- Name Field -->
+<div class="space-y-0.5">
+<p class="label-text uppercase">Họ và Tên</p>
+<div class="info-field h-7 flex items-center">
+<span class="text-[11px] font-semibold text-slate-800"></span>
+</div>
+</div>
+<!-- ID Field -->
+<div class="space-y-0.5">
+<p class="label-text uppercase">Mã số TN</p>
+<div class="info-field h-7 flex items-center">
+<span class="text-[11px] font-semibold text-slate-800"></span>
+</div>
+</div>
+<!-- Branch Field -->
+<div class="space-y-0.5">
+<p class="label-text uppercase">Ngành</p>
+<div class="info-field h-7 flex items-center">
+<span class="text-[11px] font-semibold text-slate-800"></span>
+</div>
+</div>
+</section>
+<!-- Bottom Footer Info -->
+<footer class="mt-4 flex items-end justify-between" data-purpose="card-footer">
+<div class="flex-shrink-0">
+<h2 class="main-title text-[14px] uppercase tracking-tighter">Thiếu Nhi<br/>Thánh Thể</h2>
+<div class="mt-1 inline-block px-1.5 py-0.5 bg-church-blue text-white rounded text-[7px] font-bold tracking-wider uppercase">
+              NIÊN KHÓA 2024-2025
+            </div>
+</div>
+<!-- Logo/Seal Placement -->
+<div class="w-12 h-12 relative flex items-center justify-center" data-purpose="official-seal">
+<img alt="Logo Thiếu Nhi Thánh Thể" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpTL_ojHTCq1HCbtgdYTKi1YS8jhB44DmCqy6O5FwR1liaNgND7RA6RpuQh3l4DpBhk-_HL8EIM_uA6yOGOAAC-UkqJEPVN5t3ISXn6vorRHx7z8dQIAsCJCMD475xmabdIb5DktTgxnCWYKdPKJ-70PJ8HafzVi1DkYMkyiTNk3Vc2nwIBNKb-ivXez2bo4O-dACkDHXFMpN_JC9uMs82yebDnrgcisDq8eI741EZ2-Zex-BDxoR09ysm57KaKKBtOQ"/>
+</div>
+</footer>
+</div>
+</main>
+<!-- END: Main Content Area -->
+<!-- BEGIN: Vertical Sidebar - 13mm width per spec -->
+<aside class="w-[calc(13*var(--scale))] bg-church-blue flex items-center justify-center py-6" data-purpose="card-sidebar">
+<h1 class="vertical-text text-white text-[18px] font-extrabold whitespace-nowrap uppercase">
+        GIÁO XỨ TRÙ MẬT
+      </h1>
+</aside>
+<!-- END: Vertical Sidebar -->
+</div>
+<!-- END: ID Card Body -->
+</body></html>

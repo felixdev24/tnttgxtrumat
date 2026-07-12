@@ -25,7 +25,7 @@
     let showModal = $state(false);
     let isEditing = $state(false);
     let showQrModal = $state(false);
-    let currentQr = $state<{svg: string, name: string, token: string, png?: string} | null>(null);
+    let currentQr = $state<{name: string, username: string, token: string, branch: string, tntt_class_name: string, png?: string} | null>(null);
 
     const gradeLevels = [
         'Khai Tâm 1', 'Khai Tâm 2', 
@@ -136,15 +136,23 @@
         }
     }
 
-    function downloadQr() {
-        if (!currentQr || !currentQr.png) return;
+    async function downloadCard() {
+        const cardEl = document.getElementById('id-card-container');
+        if (!cardEl) return;
 
-        const a = document.createElement('a');
-        a.href = currentQr.png;
-        a.download = `QR_${currentQr.name}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        try {
+            const { toPng } = await import('html-to-image');
+            const dataUrl = await toPng(cardEl, {
+                pixelRatio: 3,
+                backgroundColor: '#ffffff',
+            });
+            const link = document.createElement('a');
+            link.download = `The_TNTT_${currentQr?.name || 'DoanSinh'}.png`;
+            link.href = dataUrl;
+            link.click();
+        } catch (error) {
+            console.error('Failed to download card', error);
+        }
     }
 </script>
 
@@ -159,7 +167,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-stack-lg gap-4">
                 <div>
                     <h1 class="font-headline-lg text-headline-lg text-primary">Quản Lý Đoàn Sinh</h1>
-                    <p class="text-on-surface-variant mt-1 text-sm">Danh sách, thông tin và mã QR của các đoàn sinh.</p>
+                    <p class="text-on-surface-variant mt-1 text-sm">Danh sách, thông tin và thẻ giáo lý sinh.</p>
                 </div>
                 <button
                     onclick={() => openAddModal()}
@@ -224,7 +232,7 @@
                             <th class="p-4 border-b border-outline-variant/10">Họ & Tên</th>
                             <th class="p-4 border-b border-outline-variant/10">Lớp / Ngành</th>
                             <th class="p-4 border-b border-outline-variant/10">SĐT</th>
-                            <th class="p-4 border-b border-outline-variant/10 text-center">QR Code</th>
+                            <th class="p-4 border-b border-outline-variant/10 text-center">Thẻ</th>
                             <th class="p-4 border-b border-outline-variant/10 text-right">Thao tác</th>
                         </tr>
                     </thead>
@@ -251,9 +259,9 @@
                                     <button 
                                         onclick={() => viewQr(ds)}
                                         class="p-2 bg-surface-container hover:bg-surface-variant rounded-lg text-secondary transition-all"
-                                        title="Xem QR Code"
+                                        title="Xem Thẻ Thiếu Nhi"
                                     >
-                                        <span class="material-symbols-outlined block">qr_code_2</span>
+                                        <span class="material-symbols-outlined block">badge</span>
                                     </button>
                                 </td>
                                 <td class="p-4 text-right">
@@ -295,7 +303,7 @@
                 </table>
             </div>
             
-            <!-- Pagination could go here if needed based on doanSinhs.links -->
+            <!-- Pagination -->
             {#if doanSinhs.links && doanSinhs.links.length > 3}
                 <div class="mt-6 flex justify-center gap-1">
                     {#each doanSinhs.links as link}
@@ -402,38 +410,115 @@
     </div>
 {/if}
 
+<!-- Card Modal (Thẻ Thiếu Nhi) -->
 {#if showQrModal && currentQr}
-    <div class="fixed inset-0 bg-zinc-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col p-8 text-center items-center">
-            <h2 class="font-title-lg text-headline-sm text-primary mb-1">QR Code Điểm Danh</h2>
-            <p class="text-on-surface-variant font-label-bold mb-5">{currentQr.name}</p>
-            
-            <div class="bg-white p-4 rounded-xl shadow-inner mb-4 w-52 h-52 flex items-center justify-center qr-container border border-outline-variant/20">
-                <img src={currentQr.png} alt="QR Code" class="w-full h-full object-contain" />
+    <div class="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-md overflow-hidden flex flex-col p-6 items-center">
+            <h2 class="font-title-lg text-headline-sm text-[#004a99] mb-4">Thẻ Thiếu Nhi Thánh Thể</h2>
+
+            <!-- ID Card -->
+            <div id="id-card-container" class="id-card-container bg-white flex" style="font-family: 'Inter', system-ui, sans-serif;">
+                <!-- Main Content -->
+                <main class="flex-grow p-4 flex flex-col h-full relative">
+                    <div class="flex flex-col h-full">
+                        <!-- QR Code Area -->
+                        <section class="flex justify-center mb-3">
+                            <div class="w-full aspect-[54/45] flex items-center justify-center rounded-xl overflow-hidden shadow-inner bg-gray-50 border border-gray-100">
+                                <img src={currentQr.png} alt="QR Code" class="w-3/4 h-3/4 object-contain" />
+                            </div>
+                        </section>
+                        <!-- Member Info Fields -->
+                        <section class="space-y-2 flex-grow">
+                            <div class="space-y-0.5">
+                                <p class="card-label-text uppercase">Họ và Tên</p>
+                                <div class="card-info-field h-7 flex items-center">
+                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.name}</span>
+                                </div>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="card-label-text uppercase">Mã số TN</p>
+                                <div class="card-info-field h-7 flex items-center">
+                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.username}</span>
+                                </div>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="card-label-text uppercase">Ngành</p>
+                                <div class="card-info-field h-7 flex items-center">
+                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.branch || currentQr.tntt_class_name}</span>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- Footer -->
+                        <footer class="mt-4 flex items-end justify-between">
+                            <div class="flex-shrink-0">
+                                <h2 class="text-[14px] font-extrabold text-[#004a99] uppercase leading-tight tracking-tighter">Thiếu Nhi<br/>Thánh Thể</h2>
+                                <div class="mt-1 inline-block px-1.5 py-0.5 bg-[#004a99] text-white rounded text-[7px] font-bold tracking-wider uppercase">
+                                    NIÊN KHÓA 2024-2025
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 relative flex items-center justify-center">
+                                <img alt="Logo TNTT" class="w-full h-full object-contain" src="/apple-touch-icon.png" />
+                            </div>
+                        </footer>
+                    </div>
+                </main>
+                <!-- Sidebar -->
+                <aside class="card-sidebar flex items-center justify-center py-6">
+                    <h1 class="card-vertical-text text-white text-[18px] font-extrabold whitespace-nowrap uppercase">
+                        GIÁO XỨ TRÙ MẬT
+                    </h1>
+                </aside>
             </div>
 
-            <p class="text-xs text-on-surface-variant mb-5 bg-surface-container px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[14px] text-primary">info</span>
-                Tải về dạng <strong class="text-primary">PNG</strong> để quét bằng điện thoại hoặc máy quét QR
-            </p>
-            
-            <div class="flex gap-3 w-full">
+            <!-- Actions -->
+            <div class="flex gap-3 w-full mt-5">
                 <button onclick={() => showQrModal = false} class="flex-1 py-3 rounded-xl font-label-bold bg-surface-container hover:bg-surface-variant transition-colors">
                     Đóng
                 </button>
-                <button onclick={downloadQr} class="flex-1 py-3 rounded-xl font-label-bold bg-primary text-on-primary hover:brightness-110 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-2">
+                <button onclick={downloadCard} class="flex-1 py-3 rounded-xl font-label-bold bg-[#004a99] text-white hover:brightness-110 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">download</span>
-                    Tải PNG
+                    Tải Thẻ PNG
                 </button>
             </div>
         </div>
     </div>
 {/if}
 
-
 <style>
-    :global(.qr-container svg) {
-        width: 100%;
-        height: 100%;
+    .id-card-container {
+        --scale: 4.8px;
+        width: calc(72 * var(--scale));
+        height: calc(112 * var(--scale));
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        border-radius: calc(3.5 * var(--scale));
+    }
+
+    .card-vertical-text {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        letter-spacing: 0.2em;
+    }
+
+    .card-sidebar {
+        width: calc(13 * var(--scale));
+        background-color: #004a99;
+    }
+
+    .card-label-text {
+        font-size: 0.55rem;
+        color: #6b7280;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .card-info-field {
+        background-color: #f9fafb;
+        border-bottom: 1.5px solid #004a99;
+        border-radius: 2px 2px 0 0;
+        padding: 0.2rem 0.4rem;
     }
 </style>
+

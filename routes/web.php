@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\AttendanceController;
 use App\Http\Controllers\Dashboard\CalendarController;
+use App\Http\Controllers\Dashboard\DashboardStatsController;
 use App\Http\Controllers\Dashboard\DoanSinhController;
 use App\Http\Controllers\Dashboard\HuynhTruongController;
 use App\Http\Controllers\Dashboard\PostCategoryController;
@@ -20,8 +21,9 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     $posts = Post::where('status', 'published')
+        ->with('category')
         ->orderByDesc('created_at')
-        ->take(5)
+        ->take(7)
         ->get();
 
     $calendarEvents = CalendarEvent::whereDate('event_date', '>=', now()->startOfMonth())
@@ -50,9 +52,7 @@ Route::get('/hoat-dong', [PublicPostController::class, 'index'])->name('posts.in
 Route::get('/hoat-dong/{slug}', [PublicPostController::class, 'show'])->name('posts.show');
 
 Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('dashboard.posts.index');
-    })->name('dashboard.index');
+    Route::get('/', [DashboardStatsController::class, 'index'])->name('dashboard.index');
 
     // Posts
     Route::get('/posts', [PostController::class, 'index'])->name('dashboard.posts.index');

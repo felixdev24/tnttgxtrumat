@@ -5,10 +5,6 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\TnttClass;
 use App\Models\User;
-use chillerlan\QRCode\Common\EccLevel;
-use chillerlan\QRCode\Output\QRMarkupSVG;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -119,21 +115,11 @@ class DoanSinhController extends Controller
             $user->save();
         }
 
-        $options = new QROptions([
-            'version' => 5,
-            'outputType' => QRMarkupSVG::class,
-            'eccLevel' => EccLevel::L,
-            'addQuietzone' => true,
-            'outputBase64' => false,
-        ]);
-
-        $qrcode = new QRCode($options);
-        $svg = $qrcode->render($user->qr_token);
-
         return response()->json([
-            'svg' => $svg,
             'token' => $user->qr_token,
             'name' => $user->name,
+            'username' => $user->username,
+            'branch' => $user->branch ?? '',
             'tntt_class_name' => $user->tnttClass ? $user->tnttClass->name : '',
         ]);
     }

@@ -374,6 +374,74 @@
         </div>
     </section>
 
+    <!-- Latest Posts -->
+    <section class="px-5 py-12 md:px-16">
+        <div class="mx-auto max-w-[1200px]">
+            <div class="mb-10 flex items-end justify-between">
+                <div>
+                    <span class="mb-2 block text-sm font-bold uppercase tracking-wider text-[#c00008] dark:text-[#ffb3ad]">
+                        Tin Tức & Hoạt Động
+                    </span>
+                    <h2 class="text-3xl font-bold text-[#191c1d] md:text-4xl dark:text-[#e5e2e1]">
+                        Bài Viết Mới Nhất
+                    </h2>
+                </div>
+                <Link
+                    href="/hoat-dong"
+                    class="hidden items-center gap-2 font-semibold text-[#42617d] transition-colors hover:text-[#c00008] md:flex dark:text-[#a4c9ff] dark:hover:text-[#ffb3ad]"
+                >
+                    Xem tất cả
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </Link>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {#if posts && posts.length > 0}
+                    {#each posts.slice(0, 3) as post}
+                        <Link href={`/hoat-dong/${post.slug}`} class="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-[#1c1b1b]">
+                            <div class="relative aspect-[4/3] overflow-hidden">
+                                <img 
+                                    src={post.cover_image ? `/storage/${post.cover_image}` : defaultImage} 
+                                    alt={post.title}
+                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                {#if post.category}
+                                    <div class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-[#42617d] backdrop-blur-sm dark:bg-black/80 dark:text-[#a4c9ff]">
+                                        {post.category.name}
+                                    </div>
+                                {/if}
+                            </div>
+                            <div class="flex flex-1 flex-col p-6">
+                                <div class="mb-3 text-xs font-semibold text-[#42474d]/70 dark:text-[#e4beba]/70">
+                                    {new Date(post.created_at).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                </div>
+                                <h3 class="mb-3 text-xl font-bold leading-tight text-[#191c1d] transition-colors group-hover:text-[#c00008] dark:text-[#e5e2e1] dark:group-hover:text-[#ffb3ad]">
+                                    {post.title}
+                                </h3>
+                                <p class="mb-4 mt-auto line-clamp-2 text-sm text-[#42474d] dark:text-[#e4beba]">
+                                    {@html post.content.replace(/<[^>]*>?/gm, '')}
+                                </p>
+                            </div>
+                        </Link>
+                    {/each}
+                {:else}
+                    <div class="col-span-full py-12 text-center text-[#42474d] dark:text-[#e4beba]">
+                        Chưa có bài viết nào.
+                    </div>
+                {/if}
+            </div>
+            <div class="mt-8 text-center md:hidden">
+                <Link
+                    href="/hoat-dong"
+                    class="inline-flex items-center gap-2 font-semibold text-[#42617d] transition-colors hover:text-[#c00008] dark:text-[#a4c9ff] dark:hover:text-[#ffb3ad]"
+                >
+                    Xem tất cả
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </Link>
+            </div>
+        </div>
+    </section>
+
     <!-- Stats -->
     <section class="px-5 pb-16 md:px-16">
         <div

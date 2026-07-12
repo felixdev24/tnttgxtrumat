@@ -105,5 +105,5 @@ it('can generate qr code for doan sinh', function () {
     actingAs($this->huynhTruong)
         ->get("/dashboard/doan-sinh/{$doanSinh->id}/qr")
         ->assertStatus(200)
-        ->assertJsonStructure(['svg', 'token', 'name']);
+        ->assertJsonStructure(['token', 'name', 'username', 'branch', 'tntt_class_name']);
 });
