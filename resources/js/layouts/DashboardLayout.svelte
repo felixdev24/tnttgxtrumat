@@ -193,6 +193,26 @@
             <div
                 class="mt-auto pb-8 flex flex-col gap-1 border-t border-outline-variant/10 pt-4"
             >
+                {#if (page.props as any).auth?.user?.is_super_admin || (page.props as any).auth?.is_super_admin}
+                    <Link
+                        href="/dashboard/settings"
+                        class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                            '/dashboard/settings',
+                        )
+                            ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                            : 'text-on-surface-variant hover:bg-surface-container-high'}"
+                    >
+                        <span
+                            class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' {page.url.startsWith(
+                                '/dashboard/settings',
+                            )
+                                ? '1'
+                                : '0'};">settings</span
+                        >
+                        <span class="font-title-md text-[16px]">Cài Đặt Thẻ</span>
+                    </Link>
+                {/if}
                 <Link
                     href="/dashboard/profile"
                     class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url ===

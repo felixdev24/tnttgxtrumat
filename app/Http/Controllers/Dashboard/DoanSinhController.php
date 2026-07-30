@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\TnttClass;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -120,7 +121,9 @@ class DoanSinhController extends Controller
             'name' => $user->name,
             'username' => $user->username,
             'branch' => $user->branch ?? '',
+            'parent_phone' => $user->parent_phone ?? '',
             'tntt_class_name' => $user->tnttClass ? $user->tnttClass->name : '',
+            'academic_year' => Setting::get('academic_year', '2024-2025'),
         ]);
     }
 

@@ -25,7 +25,7 @@
     let showModal = $state(false);
     let isEditing = $state(false);
     let showQrModal = $state(false);
-    let currentQr = $state<{name: string, username: string, token: string, branch: string, tntt_class_name: string, png?: string} | null>(null);
+    let currentQr = $state<{name: string, username: string, token: string, branch: string, tntt_class_name: string, parent_phone?: string, academic_year?: string, png?: string} | null>(null);
 
     const gradeLevels = [
         'Khai Tâm 1', 'Khai Tâm 2', 
@@ -441,10 +441,18 @@
                                     <span class="text-[11px] font-semibold text-slate-800">{currentQr.username}</span>
                                 </div>
                             </div>
-                            <div class="space-y-0.5">
-                                <p class="card-label-text uppercase">Ngành</p>
-                                <div class="card-info-field h-7 flex items-center">
-                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.branch || currentQr.tntt_class_name}</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="space-y-0.5">
+                                    <p class="card-label-text uppercase">Ngành</p>
+                                    <div class="card-info-field h-7 flex items-center">
+                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.branch || currentQr.tntt_class_name}</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <p class="card-label-text uppercase">SĐT Phụ Huynh</p>
+                                    <div class="card-info-field h-7 flex items-center">
+                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.parent_phone || 'N/A'}</span>
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -453,7 +461,7 @@
                             <div class="flex-shrink-0">
                                 <h2 class="text-[14px] font-extrabold text-[#004a99] uppercase leading-tight tracking-tighter">Thiếu Nhi<br/>Thánh Thể</h2>
                                 <div class="mt-1 inline-block px-1.5 py-0.5 bg-[#004a99] text-white rounded text-[7px] font-bold tracking-wider uppercase">
-                                    NIÊN KHÓA 2024-2025
+                                    NIÊN KHÓA {currentQr.academic_year || '2024-2025'}
                                 </div>
                             </div>
                             <div class="w-12 h-12 relative flex items-center justify-center">
