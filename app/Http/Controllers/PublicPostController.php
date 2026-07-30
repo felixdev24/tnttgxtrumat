@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,8 +52,15 @@ class PublicPostController extends Controller
             ->with('user:id,name,avatar')
             ->firstOrFail();
 
+        $meta = [
+            'title' => $post->title,
+            'description' => Str::limit(strip_tags($post->content), 150),
+            'image' => $post->cover_image ? asset('storage/'.$post->cover_image) : asset('apple-touch-icon.png'),
+            'url' => route('posts.show', $post->slug),
+        ];
+
         return Inertia::render('posts/Show', [
             'post' => $post,
-        ]);
+        ])->withViewData(['meta' => $meta]);
     }
 }

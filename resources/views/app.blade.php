@@ -4,6 +4,20 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ $meta['title'] ?? 'Thiếu Nhi Thánh Thể Giáo Xứ Trù Mật' }}">
+        <meta property="og:description" content="{{ $meta['description'] ?? 'Trang thông tin, hoạt động và học tập của Xứ Đoàn Thiếu Nhi Thánh Thể Giáo xứ Trù Mật.' }}">
+        <meta property="og:image" content="{{ $meta['image'] ?? asset('apple-touch-icon.png') }}">
+        <meta property="og:url" content="{{ $meta['url'] ?? request()->url() }}">
+        <meta property="og:site_name" content="Thiếu Nhi Thánh Thể Giáo xứ Trù Mật">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $meta['title'] ?? 'Thiếu Nhi Thánh Thể Giáo Xứ Trù Mật' }}">
+        <meta name="twitter:description" content="{{ $meta['description'] ?? 'Trang thông tin, hoạt động và học tập của Xứ Đoàn Thiếu Nhi Thánh Thể Giáo xứ Trù Mật.' }}">
+        <meta name="twitter:image" content="{{ $meta['image'] ?? asset('apple-touch-icon.png') }}">
         <script>
             (function () {
                 try {
