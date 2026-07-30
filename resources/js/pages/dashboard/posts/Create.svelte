@@ -89,7 +89,11 @@
         editor = new Editor({
             element: element,
             extensions: [
-                StarterKit,
+                StarterKit.configure({
+                    // Exclude built-in extensions that we configure separately
+                    link: false,
+                    underline: false,
+                }),
                 Underline,
                 ImageResize,
                 TiptapLink.configure({ openOnClick: false }),
