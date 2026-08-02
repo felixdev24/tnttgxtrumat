@@ -14,6 +14,7 @@
         branch: string | null;
         dob: string | null;
         qr_token: string | null;
+        zalo_id: string | null;
     }
 
     let { doanSinhs, stats, filters, classes }: { doanSinhs: any; stats: any; filters: any; classes: any[] } = $props();
@@ -52,6 +53,7 @@
         dob: '',
         phone: '',
         parent_phone: '',
+        zalo_id: '',
         address: '',
     });
 
@@ -83,6 +85,7 @@
         form.dob = ds.dob ? ds.dob.split('T')[0] : '';
         form.phone = ds.phone || '';
         form.parent_phone = ds.parent_phone || '';
+        form.zalo_id = ds.zalo_id || '';
         showModal = true;
     }
 
@@ -145,6 +148,14 @@
         }
     }
 
+    function sendAbsenceAlerts() {
+        if (confirm('Hệ thống sẽ kiểm tra và gửi tin nhắn Zalo đến các đoàn sinh vắng mặt quá 2 buổi trong tháng này. Bạn có chắc chắn muốn thực hiện?')) {
+            router.post('/dashboard/doan-sinh/alerts/absence', {}, {
+                preserveScroll: true,
+            });
+        }
+    }
+
     async function viewQr(ds: DoanSinh) {
         try {
             const response = await fetch(`/dashboard/doan-sinh/${ds.id}/qr`);
@@ -199,13 +210,24 @@
                     <h1 class="font-headline-lg text-headline-lg text-primary">Quản Lý Đoàn Sinh</h1>
                     <p class="text-on-surface-variant mt-1 text-sm">Danh sách, thông tin và thẻ giáo lý sinh.</p>
                 </div>
-                <button
-                    onclick={() => openAddModal()}
-                    class="duolingo-shadow-primary bg-primary text-on-primary px-6 py-3 rounded-xl font-title-md text-[16px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md"
-                >
-                    <span class="material-symbols-outlined">person_add</span>
-                    Thêm Đoàn Sinh
-                </button>
+                <div class="flex items-center gap-3">
+                    {#if (page.props as any).auth?.is_super_admin}
+                        <button
+                            onclick={sendAbsenceAlerts}
+                            class="bg-tertiary text-on-tertiary px-6 py-3 rounded-xl font-title-md text-[16px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-sm"
+                        >
+                            <span class="material-symbols-outlined">chat</span>
+                            Gửi cảnh báo vắng mặt
+                        </button>
+                    {/if}
+                    <button
+                        onclick={() => openAddModal()}
+                        class="duolingo-shadow-primary bg-primary text-on-primary px-6 py-3 rounded-xl font-title-md text-[16px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md"
+                    >
+                        <span class="material-symbols-outlined">person_add</span>
+                        Thêm Đoàn Sinh
+                    </button>
+                </div>
             </div>
 
             {#if page.props.flash?.success}
@@ -479,11 +501,15 @@
                             <label class="block text-sm font-label-bold text-on-surface-variant mb-1">SĐT Phụ Huynh</label>
                             <input type="text" bind:value={form.parent_phone} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
                         </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ngày sinh</label>
-                        <input type="date" bind:value={form.dob} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Zalo ID (Bot API)</label>
+                            <input type="text" bind:value={form.zalo_id} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-on-surface" placeholder="User ID trên Zalo Mini App" />
+                            {#if form.errors.zalo_id}<p class="text-xs text-error mt-1">{form.errors.zalo_id}</p>{/if}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ngày Sinh</label>
+                            <input type="date" bind:value={form.dob} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                        </div>
                     </div>
                 </form>
             </div>

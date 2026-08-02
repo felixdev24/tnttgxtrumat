@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'zalo_bot' => [
+        'token' => env('ZALO_BOT_TOKEN'),
+    ],
+
 ];

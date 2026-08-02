@@ -10,4 +10,8 @@ Artisan::command('inspire', function () {
 
 Schedule::command('attendance:create-weekly')
     ->saturdays()->at('20:00')
-    ->timezone('Asia/Bangkok');
+    ->timezone('Asia/Ho_Chi_Minh');
+
+Schedule::command('alerts:absence')
+    ->monthlyOn(30, '19:00')
+    ->timezone('Asia/Ho_Chi_Minh');

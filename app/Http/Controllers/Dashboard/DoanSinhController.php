@@ -61,6 +61,7 @@ class DoanSinhController extends Controller
             'dob' => 'nullable|date',
             'phone' => 'nullable|string',
             'parent_phone' => 'nullable|string',
+            'zalo_id' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
 
@@ -86,6 +87,7 @@ class DoanSinhController extends Controller
             'dob' => 'nullable|date',
             'phone' => 'nullable|string',
             'parent_phone' => 'nullable|string',
+            'zalo_id' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
 
@@ -142,5 +144,11 @@ class DoanSinhController extends Controller
         ]);
 
         return back()->with('success', 'Đã đổi mật khẩu cho đoàn sinh.');
+    }
+
+    public function sendAbsenceAlerts()
+    {
+        \Illuminate\Support\Facades\Artisan::call('alerts:absence');
+        return back()->with('success', 'Đã kiểm tra và gửi cảnh báo Zalo thành công!');
     }
 }

@@ -29,6 +29,8 @@ use Illuminate\Support\Str;
     'tntt_class_id',
     'branch',
     'qr_token',
+    'zalo_id',
+    'last_zalo_absence_alert_at',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -45,6 +47,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_zalo_absence_alert_at' => 'datetime',
             'password' => 'hashed',
             'dob' => 'date',
             'years_of_activity' => 'integer',

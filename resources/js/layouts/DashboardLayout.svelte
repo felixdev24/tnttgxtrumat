@@ -138,26 +138,7 @@
                         >
                     </Link>
                 {/if}
-                <Link
-                    href="/dashboard/posts"
-                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
-                        '/dashboard/posts',
-                    )
-                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
-                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
-                >
-                    <span
-                        class="material-symbols-outlined"
-                        style="font-variation-settings: 'FILL' {page.url.startsWith(
-                            '/dashboard/posts',
-                        )
-                            ? '1'
-                            : '0'};">description</span
-                    >
-                    <span class="font-title-md text-[16px]"
-                        >Quản lý bài viết</span
-                    >
-                </Link>
+
                 <Link
                     href="/dashboard/tntt-classes"
                     class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(

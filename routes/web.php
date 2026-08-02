@@ -117,6 +117,7 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
         Route::delete('/huynh-truong/{user}', [HuynhTruongController::class, 'destroy'])->name('dashboard.huynh-truong.destroy');
         Route::post('/huynh-truong/{user}/reset-password', [HuynhTruongController::class, 'resetPassword'])->name('dashboard.huynh-truong.reset-password');
         Route::post('/doan-sinh/{user}/reset-password', [DoanSinhController::class, 'resetPassword'])->name('dashboard.doan-sinh.reset-password');
+        Route::post('/doan-sinh/alerts/absence', [DoanSinhController::class, 'sendAbsenceAlerts'])->name('dashboard.doan-sinh.alerts.absence');
 
         // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('dashboard.settings.index');
