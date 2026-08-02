@@ -32,9 +32,9 @@
         <aside
             class="{mobileNavOpen
                 ? 'translate-x-0'
-                : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 fixed left-0 top-[80px] bottom-0 bg-white dark:bg-zinc-900 p-6 border-r border-zinc-200 dark:border-zinc-800"
+                : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 fixed left-0 top-[80px] bottom-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 overflow-hidden"
         >
-            <div class="flex flex-col gap-stack-sm mb-stack-lg">
+            <div class="flex flex-col gap-stack-sm mb-stack-lg shrink-0 px-6 pt-6">
                 <div class="flex items-center gap-3">
                     <div
                         class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
@@ -52,8 +52,9 @@
                 </div>
             </div>
 
+            <!-- Scrollable nav area -->
             <nav
-                class="flex-1 flex flex-col gap-1"
+                class="flex-1 flex flex-col gap-1 overflow-y-auto px-6 pb-2"
                 onclick={() =>
                     window.innerWidth < 768 && (mobileNavOpen = false)}
             >
@@ -238,10 +239,11 @@
                 </Link>
             </nav>
 
+            <!-- Bottom static section -->
             <div
-                class="mt-auto pb-8 flex flex-col gap-1 border-t border-outline-variant/10 pt-4"
+                class="shrink-0 pb-4 px-6 flex flex-col gap-1 border-t border-outline-variant/10 pt-4"
             >
-                {#if (page.props as any).auth?.user?.is_super_admin || (page.props as any).auth?.is_super_admin}
+                {#if (page.props as any).auth?.is_super_admin}
                     <Link
                         href="/dashboard/settings"
                         class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
@@ -258,7 +260,7 @@
                                 ? '1'
                                 : '0'};">settings</span
                         >
-                        <span class="font-title-md text-[16px]">Cài Đặt Thẻ</span>
+                        <span class="font-title-md text-[16px]">Cài Đặt Trang Web</span>
                     </Link>
                 {/if}
                 <Link

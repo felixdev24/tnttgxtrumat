@@ -19,9 +19,6 @@
         navItems = [
             { label: 'Trang chủ', href: '/' },
             { label: 'Hoạt động', href: '/hoat-dong' },
-            { label: 'Giáo Lý', href: '/hoat-dong?category=giao-ly' },
-            { label: 'Câu Chuyện', href: '/hoat-dong?category=cau-chuyen-thieu-nhi' },
-            { label: 'Tài Liệu', href: '/hoat-dong?category=tai-lieu-huynh-truong' },
             { label: 'Đố vui', href: '/quizzes' },
             { label: 'Dashboard', href: '/dashboard' }
         ] satisfies NavItem[],
@@ -173,7 +170,7 @@
                 </div>
             </div>
 
-            <nav class="hidden items-center gap-8 md:flex" aria-label="Chính">
+            <nav class="hidden items-center gap-6 md:flex" aria-label="Chính">
                 {#each filteredNavItems as item (item.href + item.label)}
                     {@const active = navItemIsActive(item.href)}
                     {#if item.href === '/'}
@@ -196,6 +193,35 @@
                         </a>
                     {/if}
                 {/each}
+
+                <!-- Dropdown: Nội dung -->
+                <div class="relative group">
+                    <button
+                        type="button"
+                        class="flex items-center gap-1 font-['Nunito',sans-serif] text-base transition-colors {currentPath.includes('/hoat-dong?category=')
+                            ? 'border-b-4 border-[#42617d] pb-1 font-bold text-[#42617d] dark:border-[#aacaea] dark:text-[#aacaea]'
+                            : 'text-[#42474d] hover:text-[#42617d] dark:text-zinc-300 dark:hover:text-[#aacaea]'}"
+                    >
+                        Nội dung
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                    <div class="absolute left-0 top-full mt-2 w-52 rounded-2xl border border-zinc-100 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-800 z-50">
+                        <div class="p-2 flex flex-col gap-1">
+                            <a href="/hoat-dong?category=giao-ly" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] transition-colors hover:bg-[#f0f4ff] hover:text-[#42617d] dark:text-zinc-300 dark:hover:bg-zinc-700">
+                                <span class="material-symbols-outlined text-[18px] text-[#42617d]">menu_book</span>
+                                Giáo Lý
+                            </a>
+                            <a href="/hoat-dong?category=cau-chuyen-thieu-nhi" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] transition-colors hover:bg-[#f0f4ff] hover:text-[#42617d] dark:text-zinc-300 dark:hover:bg-zinc-700">
+                                <span class="material-symbols-outlined text-[18px] text-[#42617d]">auto_stories</span>
+                                Câu Chuyện Thiếu Nhi
+                            </a>
+                            <a href="/hoat-dong?category=tai-lieu-huynh-truong" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] transition-colors hover:bg-[#f0f4ff] hover:text-[#42617d] dark:text-zinc-300 dark:hover:bg-zinc-700">
+                                <span class="material-symbols-outlined text-[18px] text-[#42617d]">folder_open</span>
+                                Tài Liệu Huynh Trưởng
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </nav>
 
             <div class="flex shrink-0 items-center gap-3">
@@ -280,6 +306,28 @@
                         </a>
                     {/if}
                 {/each}
+
+                <!-- N\u1ed9i dung (mobile) -->
+                <div class="rounded-xl px-3 py-1">
+                    <div class="text-xs font-bold uppercase tracking-wider text-[#42617d]/60 dark:text-[#aacaea]/60 mb-1 mt-1">Nội Dung</div>
+                    <div class="flex flex-col gap-1 pl-2">
+                        <a href="/hoat-dong?category=giao-ly" onclick={closeMobileNav}
+                            class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] hover:bg-[#e7e8e9]/60 dark:text-zinc-300 dark:hover:bg-white/10">
+                            <span class="material-symbols-outlined text-[16px]">menu_book</span>
+                            Gi\u00e1o L\u00fd
+                        </a>
+                        <a href="/hoat-dong?category=cau-chuyen-thieu-nhi" onclick={closeMobileNav}
+                            class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] hover:bg-[#e7e8e9]/60 dark:text-zinc-300 dark:hover:bg-white/10">
+                            <span class="material-symbols-outlined text-[16px]">auto_stories</span>
+                            C\u00e2u Chuy\u1ec7n Thi\u1ebfu Nhi
+                        </a>
+                        <a href="/hoat-dong?category=tai-lieu-huynh-truong" onclick={closeMobileNav}
+                            class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#42474d] hover:bg-[#e7e8e9]/60 dark:text-zinc-300 dark:hover:bg-white/10">
+                            <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                            T\u00e0i Li\u1ec7u Huynh Tr\u01b0\u1edfng
+                        </a>
+                    </div>
+                </div>
 
                 {#if !page.props.auth.user}
                     <div class="mt-3 pt-3 border-t border-gray-200 dark:border-zinc-700">
