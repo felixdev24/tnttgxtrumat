@@ -394,12 +394,14 @@
                     >
                         Thông tin
                     </button>
-                    <button
-                        onclick={() => (activeProfileTab = 'password')}
-                        class="pb-2 px-2 font-label-bold transition-all {activeProfileTab === 'password' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}"
-                    >
-                        Đổi mật khẩu
-                    </button>
+                    {#if ['huynh_truong', 'super_admin'].includes(page.props.auth.user.role)}
+                        <button
+                            onclick={() => (activeProfileTab = 'password')}
+                            class="pb-2 px-2 font-label-bold transition-all {activeProfileTab === 'password' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}"
+                        >
+                            Đổi mật khẩu
+                        </button>
+                    {/if}
                 </div>
 
                 {#if activeProfileTab === 'info'}

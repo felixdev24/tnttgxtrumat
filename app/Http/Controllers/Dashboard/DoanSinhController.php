@@ -127,16 +127,20 @@ class DoanSinhController extends Controller
         ]);
     }
 
-    public function resetPassword(User $user)
+    public function resetPassword(Request $request, User $user)
     {
         if ($user->role !== 'giao_ly_sinh') {
             abort(403);
         }
 
-        $user->update([
-            'password' => Hash::make('password'),
+        $request->validate([
+            'password' => 'required|string|min:6',
         ]);
 
-        return back()->with('success', 'Đã đặt lại mật khẩu thành mặc định (password).');
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Đã đổi mật khẩu cho đoàn sinh.');
     }
 }

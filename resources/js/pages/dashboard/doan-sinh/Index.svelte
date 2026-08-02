@@ -26,6 +26,13 @@
     let isEditing = $state(false);
     let showQrModal = $state(false);
     let currentQr = $state<{name: string, username: string, token: string, branch: string, tntt_class_name: string, parent_phone?: string, academic_year?: string, png?: string} | null>(null);
+    
+    // Reset password modal state
+    let showResetPasswordModal = $state(false);
+    let resetPasswordUser = $state<DoanSinh | null>(null);
+    let newPassword = $state('');
+    let showNewPasswordDoanSinh = $state(false);
+    let resetPasswordError = $state('');
 
     const gradeLevels = [
         'Khai Tâm 1', 'Khai Tâm 2', 
@@ -107,10 +114,33 @@
         }
     }
 
-    function resetPasswordDoanSinh(ds: DoanSinh) {
-        if (confirm(`Bạn có chắc muốn đặt lại mật khẩu về mặc định (password) cho: "${ds.name}"?`)) {
-            router.post(`/dashboard/doan-sinh/${ds.id}/reset-password`, {}, {
+    function openResetPasswordModal(ds: DoanSinh) {
+        resetPasswordUser = ds;
+        newPassword = '';
+        showNewPasswordDoanSinh = false;
+        resetPasswordError = '';
+        showResetPasswordModal = true;
+    }
+
+    function submitResetPassword() {
+        if (!newPassword || newPassword.length < 6) {
+            resetPasswordError = 'Mật khẩu phải có ít nhất 6 ký tự.';
+            return;
+        }
+        if (resetPasswordUser) {
+            router.post(`/dashboard/doan-sinh/${resetPasswordUser.id}/reset-password`, { password: newPassword }, {
                 preserveScroll: true,
+                onSuccess: () => {
+                    showResetPasswordModal = false;
+                    resetPasswordUser = null;
+                },
+                onError: (errors: any) => {
+                    if (errors.password) {
+                        resetPasswordError = errors.password;
+                    } else {
+                        resetPasswordError = 'Có lỗi xảy ra, vui lòng thử lại.';
+                    }
+                }
             });
         }
     }
@@ -272,7 +302,7 @@
                                     <div class="flex items-center justify-end gap-2">
                                         {#if (page.props as any).auth?.is_super_admin}
                                             <button 
-                                                onclick={() => resetPasswordDoanSinh(ds)}
+                                                onclick={() => openResetPasswordModal(ds)}
                                                 class="p-2 hover:bg-tertiary-container rounded-lg text-tertiary transition-all"
                                                 title="Đặt lại mật khẩu"
                                             >
@@ -328,6 +358,66 @@
             {/if}
         </div>
     </div>
+
+    <!-- Reset Password Modal -->
+    {#if showResetPasswordModal && resetPasswordUser}
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <div
+                class="w-full max-w-md scale-100 rounded-3xl bg-surface p-6 shadow-2xl transition-all"
+            >
+                <div class="flex items-center justify-between border-b border-outline-variant/20 pb-4 mb-4">
+                    <h3 class="text-xl font-headline-md text-on-surface">Đổi mật khẩu</h3>
+                    <button
+                        onclick={() => (showResetPasswordModal = false)}
+                        class="rounded-full p-2 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors"
+                    >
+                        <span class="material-symbols-outlined block">close</span>
+                    </button>
+                </div>
+
+                <div class="mb-4">
+                    <p class="text-sm text-on-surface-variant mb-4">
+                        Đặt mật khẩu mới cho đoàn sinh <strong class="text-on-surface">{resetPasswordUser.name}</strong> (@{resetPasswordUser.username}).
+                    </p>
+                    <form onsubmit={(e) => { e.preventDefault(); submitResetPassword(); }} class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Mật khẩu mới</label>
+                            <div class="relative">
+                                <input type={showNewPasswordDoanSinh ? "text" : "password"} bind:value={newPassword} required minlength="6" class="w-full px-4 py-2 pr-10 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 text-on-surface" placeholder="Nhập mật khẩu mới..." />
+                                <button
+                                    type="button"
+                                    onclick={() => (showNewPasswordDoanSinh = !showNewPasswordDoanSinh)}
+                                    class="absolute top-1/2 right-3 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 flex items-center justify-center transition-colors"
+                                    tabindex="-1"
+                                    title="Xem mật khẩu"
+                                >
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        {showNewPasswordDoanSinh ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
+                            </div>
+                            {#if resetPasswordError}<p class="text-xs text-error mt-1">{resetPasswordError}</p>{/if}
+                        </div>
+                        <div class="flex justify-end gap-3 mt-6">
+                            <button
+                                type="button"
+                                onclick={() => (showResetPasswordModal = false)}
+                                class="px-5 py-2.5 rounded-xl font-label-bold text-on-surface-variant hover:bg-surface-variant transition-colors"
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                type="submit"
+                                class="px-5 py-2.5 rounded-xl font-label-bold bg-primary text-on-primary hover:brightness-110 active:scale-95 transition-all shadow-md duolingo-shadow-primary"
+                            >
+                                Lưu mật khẩu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {/if}
 </DashboardLayout>
 
 {#if showModal}
