@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\Dashboard\QuizController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\Dashboard\WebhookController;
 use App\Http\Controllers\Dashboard\TnttClassController;
 use App\Http\Controllers\PublicPostController;
 use App\Http\Controllers\PublicQuizController;
@@ -122,6 +123,12 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
         // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('dashboard.settings.index');
         Route::put('/settings', [SettingController::class, 'update'])->name('dashboard.settings.update');
+
+        // Webhooks
+        Route::get('/webhooks', [WebhookController::class, 'index'])->name('dashboard.webhooks.index');
+        Route::post('/webhooks', [WebhookController::class, 'store'])->name('dashboard.webhooks.store');
+        Route::put('/webhooks/{webhook}', [WebhookController::class, 'update'])->name('dashboard.webhooks.update');
+        Route::delete('/webhooks/{webhook}', [WebhookController::class, 'destroy'])->name('dashboard.webhooks.destroy');
     });
 
     // Điểm Danh

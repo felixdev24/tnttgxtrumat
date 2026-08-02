@@ -241,7 +241,26 @@
                                 ? '1'
                                 : '0'};">settings</span
                         >
-                        <span class="font-title-md text-[16px]">Cài Đặt Trang Web</span>
+                        <span class="font-title-md text-[16px]">Cài đặt</span>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/webhooks"
+                        class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                            '/dashboard/webhooks',
+                        )
+                            ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                            : 'text-on-surface-variant hover:bg-surface-container-high'}"
+                    >
+                        <span
+                            class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' {page.url.startsWith(
+                                '/dashboard/webhooks',
+                            )
+                                ? '1'
+                                : '0'};">webhook</span
+                        >
+                        <span class="font-title-md text-[16px]">Webhooks</span>
                     </Link>
                 {/if}
                 <Link

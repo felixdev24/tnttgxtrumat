@@ -32,9 +32,9 @@ class SendAbsenceAlerts extends Command
         $startOfMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
 
-        // Lấy tất cả đoàn sinh có zalo_id
-        $students = User::doanSinh()->whereNotNull('zalo_id')->get();
-        $countSent = 0;
+        // Lấy tất cả đoàn sinh
+        $students = User::doanSinh()->with('tnttClass')->get();
+        $absentList = [];
 
         $this->info("Bắt đầu kiểm tra và gửi cảnh báo vắng mặt tháng {$startOfMonth->format('m/Y')}...");
 
@@ -54,21 +54,40 @@ class SendAbsenceAlerts extends Command
                 ->count();
 
             if ($absences > 2) {
-                $monthStr = now()->format('m/Y');
-                $text = "Kính gửi phụ huynh em *{$student->name}*,\n\nĐây là tin nhắn tự động từ Xứ đoàn Thiếu Nhi Thánh Thể.\nTrong tháng {$monthStr}, em đã vắng mặt *{$absences} buổi* học giáo lý.\n\nXin phụ huynh vui lòng nhắc nhở và đôn đốc em tham gia đầy đủ để việc học giáo lý không bị gián đoạn.\nTrân trọng!";
-                
-                $success = $zaloBot->sendMessage($student->zalo_id, $text);
-                
-                if ($success) {
-                    $student->update(['last_zalo_absence_alert_at' => now()]);
-                    $this->info("Đã gửi cảnh báo cho đoàn sinh: {$student->name} (Vắng {$absences} buổi)");
-                    $countSent++;
-                } else {
-                    $this->error("Lỗi khi gửi cảnh báo cho: {$student->name}");
-                }
+                $absentList[] = [
+                    'student' => $student,
+                    'absences' => $absences
+                ];
             }
         }
 
-        $this->info("Hoàn thành! Đã gửi {$countSent} cảnh báo.");
+        if (empty($absentList)) {
+            $this->info("Không có đoàn sinh nào nghỉ quá 2 buổi trong tháng này (hoặc đã thông báo hết).");
+            return;
+        }
+
+        $monthStr = now()->format('m/Y');
+        $text = "Kính báo quý Phụ Huynh,\n\nDanh sách các em Thiếu Nhi vắng mặt *quá 2 buổi học giáo lý* trong tháng {$monthStr}:\n";
+
+        foreach ($absentList as $index => $item) {
+            $student = $item['student'];
+            $className = $student->tnttClass ? $student->tnttClass->name : 'Chưa xếp lớp';
+            $text .= "\n" . ($index + 1) . ". *{$student->name}* - Lớp: {$className} (Vắng: {$item['absences']} buổi)";
+        }
+
+        $text .= "\n\nXin quý phụ huynh lưu ý và đôn đốc các em tham gia đầy đủ để việc học giáo lý không bị gián đoạn. Xin cảm ơn!";
+
+        $groupId = 'ql19hdksyqoph0b8qsup'; // ID nhóm chat theo yêu cầu
+
+        $success = $zaloBot->sendMessage($groupId, $text);
+
+        if ($success) {
+            foreach ($absentList as $item) {
+                $item['student']->update(['last_zalo_absence_alert_at' => now()]);
+            }
+            $this->info("Đã gửi danh sách cảnh báo cho " . count($absentList) . " đoàn sinh vào nhóm chat.");
+        } else {
+            $this->error("Lỗi khi gửi cảnh báo vào nhóm chat.");
+        }
     }
 }
