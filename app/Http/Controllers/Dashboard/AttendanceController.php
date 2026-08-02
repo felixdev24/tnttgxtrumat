@@ -44,29 +44,41 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
+            'session_type' => 'required|in:giao_ly,sinh_hoat',
             'session_date' => 'required|date',
-            'tntt_class_id' => 'required|exists:tntt_classes,id',
+            'tntt_class_id' => 'required_if:session_type,giao_ly|nullable|exists:tntt_classes,id',
+            'points_per_attendance' => 'nullable|integer|min:0|max:100',
             'notes' => 'nullable|string',
         ]);
 
-        $validated['status'] = 'upcoming';
-        $validated['created_by'] = $request->user()->id;
+        $session = AttendanceSession::create([
+            'title' => $request->title,
+            'session_type' => $request->session_type,
+            'session_date' => $request->session_date,
+            'tntt_class_id' => $request->session_type === 'giao_ly' ? $request->tntt_class_id : null,
+            'points_per_attendance' => $request->points_per_attendance ?? 0,
+            'notes' => $request->notes,
+            'status' => 'upcoming',
+            'created_by' => $request->user()->id,
+        ]);
 
-        $session = AttendanceSession::create($validated);
+        // Auto-create records
+        if ($request->session_type === 'giao_ly') {
+            $doanSinhs = User::doanSinh()->where('tntt_class_id', $session->tntt_class_id)->get();
+        } else {
+            // sinh_hoat: all active doan sinh
+            $doanSinhs = User::doanSinh()->get();
+        }
 
-        // Auto create records for the class
-        $doanSinhs = User::doanSinh()->where('tntt_class_id', $validated['tntt_class_id'])->get();
-        $recordsData = $doanSinhs->map(function ($ds) use ($session) {
-            return [
-                'attendance_session_id' => $session->id,
-                'user_id' => $ds->id,
-                'status' => 'absent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        })->toArray();
+        $recordsData = $doanSinhs->map(fn ($ds) => [
+            'attendance_session_id' => $session->id,
+            'user_id' => $ds->id,
+            'status' => 'absent',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ])->toArray();
 
         if (! empty($recordsData)) {
             AttendanceRecord::insert($recordsData);
@@ -107,9 +119,17 @@ class AttendanceController extends Controller
             'session_date' => 'required|date',
             'notes' => 'nullable|string',
             'status' => 'required|in:upcoming,in_progress,completed',
+            'points_per_attendance' => 'nullable|integer|min:0|max:100',
         ]);
 
+        $wasNotCompleted = $session->status !== 'completed';
+
         $session->update($validated);
+
+        // Award points when completing a session
+        if ($wasNotCompleted && $validated['status'] === 'completed') {
+            $session->awardPointsToPresent();
+        }
 
         return redirect()->back()->with('success', 'Cập nhật phiên điểm danh thành công!');
     }

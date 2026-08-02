@@ -15,10 +15,12 @@ class AttendanceSession extends Model
 
     protected $fillable = [
         'title',
+        'session_type', // giao_ly, sinh_hoat
         'session_date',
         'tntt_class_id',
         'notes',
         'status', // upcoming, in_progress, completed
+        'points_per_attendance',
         'created_by',
     ];
 
@@ -76,5 +78,29 @@ class AttendanceSession extends Model
         $present = $this->presentMembers()->count();
 
         return round(($present / $total) * 100, 2);
+    }
+
+    /**
+     * Award points to all present members when session is completed.
+     * Safe to call multiple times – skips users who already got points for this session.
+     */
+    public function awardPointsToPresent(): void
+    {
+        if ($this->points_per_attendance <= 0) {
+            return;
+        }
+
+        $alreadyAwarded = \App\Models\PointTransaction::where('source_type', self::class)
+            ->where('source_id', $this->id)
+            ->pluck('user_id');
+
+        $presentUserIds = $this->records()
+            ->whereIn('status', ['present', 'late'])
+            ->pluck('user_id')
+            ->diff($alreadyAwarded);
+
+        foreach ($presentUserIds as $userId) {
+            \App\Models\PointTransaction::awardAttendance($userId, $this);
+        }
     }
 }

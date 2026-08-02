@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Link } from '@inertiajs/svelte';
+    import { page, Link } from '@inertiajs/svelte';
     import type { Snippet } from 'svelte';
 
     type FooterLink = {
@@ -11,23 +11,22 @@
         showSiteFooter = true,
         brandLine = 'Thiếu Nhi Thánh Thể',
         copyright,
-        footerLinks = [
-            { label: 'Giáo xứ', href: 'https://www.facebook.com/giaoxuTruMat' },
-            {
-                label: 'Facebook',
-                href: 'https://www.facebook.com/tnttgxtrumat',
-            },
-            { label: 'Liên hệ', href: 'tel:0868107004' },
-            { label: 'Tài liệu', href: '#' },
-        ] satisfies FooterLink[],
         children,
     }: {
         showSiteFooter?: boolean;
         brandLine?: string;
         copyright?: string;
-        footerLinks?: FooterLink[];
         children?: Snippet;
     } = $props();
+
+    let globalSettings = $derived((page.props as any).global_settings || {});
+
+    let footerLinks = $derived([
+        { label: 'Giáo xứ', href: globalSettings.footer_link_giao_xu || 'https://www.facebook.com/giaoxuTruMat' },
+        { label: 'Facebook', href: globalSettings.footer_link_facebook || 'https://www.facebook.com/tnttgxtrumat' },
+        { label: 'Liên hệ', href: globalSettings.footer_link_lien_he || 'tel:0868107004' },
+        { label: 'Tài liệu', href: globalSettings.footer_link_tai_lieu || '#' },
+    ]);
 
     const year = new Date().getFullYear();
 

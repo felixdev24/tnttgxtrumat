@@ -2,12 +2,54 @@
     import { Link } from '@inertiajs/svelte';
     import { onMount, onDestroy } from 'svelte';
 
-    let { posts = [] } = $props<{
+    let { posts = [], calendarEvents = [], welcomeSettings = {} } = $props<{
         posts?: any[];
+        calendarEvents?: any[];
+        welcomeSettings?: Record<string, string>;
     }>();
 
     let currentSlide = $state(0);
     let slideInterval: any;
+
+    let today = new Date();
+    let currentMonth = $state(today.getMonth());
+    let currentYear = $state(today.getFullYear());
+
+    let calendarDays = $derived((() => {
+        let days = [];
+        let firstDay = new Date(currentYear, currentMonth, 1).getDay(); 
+        let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        let daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+        
+        for (let i = firstDay - 1; i >= 0; i--) {
+            days.push({ day: daysInPrevMonth - i, isCurrentMonth: false });
+        }
+        for (let i = 1; i <= daysInMonth; i++) {
+            days.push({ day: i, isCurrentMonth: true });
+        }
+        let remaining = 42 - days.length;
+        for (let i = 1; i <= remaining; i++) {
+            days.push({ day: i, isCurrentMonth: false });
+        }
+        return days.slice(0, 35);
+    })());
+
+    function hasEvent(day: number, isCurrentMonth: boolean) {
+        if (!isCurrentMonth || !calendarEvents) return false;
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        return calendarEvents.some(e => e.event_date && e.event_date.startsWith(dateStr));
+    }
+
+    function changeMonth(delta: number) {
+        currentMonth += delta;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        } else if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+    }
 
     onMount(() => {
         if (posts && posts.length > 0) {
@@ -44,8 +86,11 @@
     >
         <div class="absolute inset-0 z-0">
             <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNjh8c1W778vUQBjbBW8JfbgTNmiZTnQBt7_dpqLFkcRV3P_qSG_qMToNOeylBGYsodsMjIXZCDreNrdDa3GPxu8T0LX_9LBPBivO-KwyBaYdz3x0uGjHpIMpGhs9jXvj-LqhuUntKYur-3r6aomBrLOvxcX-QEVfXDxWm3dh-d0KWGvVNtjkjUUIP2COkX8oKvTzn1r1qJezPcVxHgoLz8G4hXY_D133l2d1kykrOCuFSK2C2A0hT6SqnP02j4CvmXTu4oDbpiSo"
-                alt=""
+                src={welcomeSettings?.welcome_hero_image 
+                    ? `/storage/${welcomeSettings.welcome_hero_image}`
+                    : "https://lh3.googleusercontent.com/aida-public/AB6AXuCNjh8c1W778vUQBjbBW8JfbgTNmiZTnQBt7_dpqLFkcRV3P_qSG_qMToNOeylBGYsodsMjIXZCDreNrdDa3GPxu8T0LX_9LBPBivO-KwyBaYdz3x0uGjHpIMpGhs9jXvj-LqhuUntKYur-3r6aomBrLOvxcX-QEVfXDxWm3dh-d0KWGvVNtjkjUUIP2COkX8oKvTzn1r1qJezPcVxHgoLz8G4hXY_D133l2d1kykrOCuFSK2C2A0hT6SqnP02j4CvmXTu4oDbpiSo"
+                }
+                alt="Hero Background"
                 class="h-full w-full object-cover opacity-30 dark:opacity-40"
             />
             <div
@@ -263,12 +308,16 @@
                             class="text-xl font-semibold text-[#191c1d] dark:text-[#e5e2e1]"
                         >
                             Lịch Sinh Hoạt
+                            <span class="text-sm font-normal text-[#42474d] ml-2 dark:text-[#e4beba]">
+                                {currentMonth + 1}/{currentYear}
+                            </span>
                         </h3>
                         <div class="flex gap-2">
                             <button
                                 type="button"
                                 class="rounded-full p-2 hover:bg-black/5 dark:hover:bg-white/5"
                                 aria-label="Tháng trước"
+                                onclick={() => changeMonth(-1)}
                             >
                                 <span
                                     class="material-symbols-outlined text-[#42474d] dark:text-[#e5e2e1]"
@@ -279,6 +328,7 @@
                                 type="button"
                                 class="rounded-full p-2 hover:bg-black/5 dark:hover:bg-white/5"
                                 aria-label="Tháng sau"
+                                onclick={() => changeMonth(1)}
                             >
                                 <span
                                     class="material-symbols-outlined text-[#42474d] dark:text-[#e5e2e1]"
@@ -301,74 +351,52 @@
                     <div
                         class="grid grid-cols-7 gap-2 text-center text-base text-[#191c1d] dark:text-[#e5e2e1]"
                     >
-                        <div class="rounded-lg p-2 opacity-30 dark:opacity-20">
-                            28
-                        </div>
-                        <div class="rounded-lg p-2 opacity-30 dark:opacity-20">
-                            29
-                        </div>
-                        <div class="rounded-lg p-2 opacity-30 dark:opacity-20">
-                            30
-                        </div>
-                        <div
-                            class="rounded-lg border border-black/10 bg-black/[0.03] p-2 dark:border-white/10 dark:bg-white/5"
-                        >
-                            1
-                        </div>
-                        <div class="rounded-lg p-2">2</div>
-                        <div class="rounded-lg p-2">3</div>
-                        <div class="rounded-lg p-2">4</div>
-                        <div
-                            class="relative rounded-lg border border-[#c00008]/35 bg-[#c00008]/10 p-2 font-bold text-[#c00008] dark:border-[#ffb3ad]/40 dark:bg-[#ffb3ad]/20 dark:text-[#ffb3ad]"
-                        >
-                            5
-                            <div
-                                class="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#c00008] dark:bg-[#ffb3ad]"
-                            ></div>
-                        </div>
-                        <div class="rounded-lg p-2">6</div>
-                        <div class="rounded-lg p-2">7</div>
-                        <div class="rounded-lg p-2">8</div>
-                        <div class="rounded-lg p-2">9</div>
-                        <div class="rounded-lg p-2">10</div>
-                        <div class="rounded-lg p-2">11</div>
+                        {#each calendarDays as {day, isCurrentMonth}}
+                            {#if hasEvent(day, isCurrentMonth)}
+                                <div class="relative rounded-lg border border-[#c00008]/35 bg-[#c00008]/10 p-2 font-bold text-[#c00008] dark:border-[#ffb3ad]/40 dark:bg-[#ffb3ad]/20 dark:text-[#ffb3ad]">
+                                    {day}
+                                    <div class="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#c00008] dark:bg-[#ffb3ad]"></div>
+                                </div>
+                            {:else}
+                                <div class="rounded-lg p-2 {isCurrentMonth ? (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? 'border border-black/10 bg-black/[0.03] dark:border-white/10 dark:bg-white/5' : '') : 'opacity-30 dark:opacity-20'}">
+                                    {day}
+                                </div>
+                            {/if}
+                        {/each}
                     </div>
                 </div>
                 <div class="flex w-full flex-col gap-2 md:w-64">
-                    <div
-                        class="rounded-2xl border-l-4 border-[#c00008] bg-[#edeeef] p-4 dark:border-[#ffb3ad] dark:bg-[#2a2a2a]"
-                    >
-                        <span
-                            class="text-xs font-bold uppercase tracking-wide text-[#c00008] dark:text-[#ffb3ad]"
-                            >14:00 - Chủ Nhật</span
-                        >
-                        <span
-                            class="mt-1 block text-sm font-semibold text-[#191c1d] dark:text-[#e5e2e1]"
-                            >Chào Cờ Đoàn</span
-                        >
-                        <p
-                            class="mt-1 text-xs text-[#42474d] dark:text-[#e4beba]"
-                        >
-                            Sân nhà xứ
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-2xl border-l-4 border-[#636037] bg-[#edeeef] p-4 dark:border-[#e2c62d] dark:bg-[#2a2a2a]"
-                    >
-                        <span
-                            class="text-xs font-bold uppercase tracking-wide text-[#636037] dark:text-[#e2c62d]"
-                            >15:30 - Chủ Nhật</span
-                        >
-                        <span
-                            class="mt-1 block text-sm font-semibold text-[#191c1d] dark:text-[#e5e2e1]"
-                            >Giờ Thánh Thể</span
-                        >
-                        <p
-                            class="mt-1 text-xs text-[#42474d] dark:text-[#e4beba]"
-                        >
-                            Trong Nhà Thờ
-                        </p>
-                    </div>
+                    {#if calendarEvents && calendarEvents.length > 0}
+                        <div class="flex flex-col gap-2 h-full max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                            {#each calendarEvents.filter(e => {
+                                const d = new Date(e.event_date);
+                                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+                            }).slice(0, 5) as event, index}
+                                <div class="rounded-2xl border-l-4 {index % 2 === 0 ? 'border-[#c00008] dark:border-[#ffb3ad]' : 'border-[#636037] dark:border-[#e2c62d]'} bg-[#edeeef] p-4 dark:bg-[#2a2a2a] shrink-0">
+                                    <span class="text-xs font-bold uppercase tracking-wide {index % 2 === 0 ? 'text-[#c00008] dark:text-[#ffb3ad]' : 'text-[#636037] dark:text-[#e2c62d]'}">
+                                        {new Date(event.event_date).toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit' })}
+                                    </span>
+                                    <span class="mt-1 block text-sm font-semibold text-[#191c1d] dark:text-[#e5e2e1]">
+                                        {event.title}
+                                    </span>
+                                    {#if event.description}
+                                        <p class="mt-1 text-xs text-[#42474d] dark:text-[#e4beba]">
+                                            {event.description}
+                                        </p>
+                                    {/if}
+                                </div>
+                            {/each}
+                            {#if calendarEvents.filter(e => new Date(e.event_date).getMonth() === currentMonth && new Date(e.event_date).getFullYear() === currentYear).length === 0}
+                                <div class="p-4 text-center text-sm text-[#42474d] dark:text-[#e4beba]">
+                                    Chưa có sự kiện nào trong tháng này.
+                                </div>
+                            {/if}
+                        </div>
+                    {:else}
+                        <div class="p-4 text-center text-sm text-[#42474d] dark:text-[#e4beba]">
+                            Chưa có sự kiện nào sắp tới.
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>
@@ -451,7 +479,7 @@
                 <div
                     class="mb-1 text-[40px] font-bold text-[#42617d] dark:text-[#ffb3ad]"
                 >
-                    450+
+                    {welcomeSettings?.stat_doan_sinh || '450+'}
                 </div>
                 <div
                     class="text-sm font-semibold text-[#42474d] dark:text-[#e4beba]"
@@ -463,7 +491,7 @@
                 <div
                     class="mb-1 text-[40px] font-bold text-[#636037] dark:text-[#e2c62d]"
                 >
-                    32
+                    {welcomeSettings?.stat_huynh_truong || '32'}
                 </div>
                 <div
                     class="text-sm font-semibold text-[#42474d] dark:text-[#e4beba]"
@@ -475,7 +503,7 @@
                 <div
                     class="mb-1 text-[40px] font-bold text-[#42617d] dark:text-[#a4c9ff]"
                 >
-                    12
+                    {welcomeSettings?.stat_lop_giao_ly || '12'}
                 </div>
                 <div
                     class="text-sm font-semibold text-[#42474d] dark:text-[#e4beba]"
@@ -487,7 +515,7 @@
                 <div
                     class="mb-1 text-[40px] font-bold text-[#191c1d] dark:text-[#e5e2e1]"
                 >
-                    20+
+                    {welcomeSettings?.stat_hoat_dong || '20+'}
                 </div>
                 <div
                     class="text-sm font-semibold text-[#42474d] dark:text-[#e4beba]"

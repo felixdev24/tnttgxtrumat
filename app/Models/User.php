@@ -64,6 +64,39 @@ class User extends Authenticatable
         return $this->hasMany(AttendanceRecord::class);
     }
 
+    public function pointTransactions(): HasMany
+    {
+        return $this->hasMany(PointTransaction::class);
+    }
+
+    /**
+     * Get total points by type or grand total.
+     */
+    public function totalPoints(?string $type = null): int
+    {
+        $query = $this->pointTransactions();
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        return (int) $query->sum('points');
+    }
+
+    /**
+     * Get total points in a given month/year.
+     */
+    public function totalPointsByMonth(int $year, int $month, ?string $type = null): int
+    {
+        $query = $this->pointTransactions()
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month);
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        return (int) $query->sum('points');
+    }
+
     public function createdSessions(): HasMany
     {
         return $this->hasMany(AttendanceSession::class, 'created_by');

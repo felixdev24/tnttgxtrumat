@@ -19,6 +19,9 @@
         navItems = [
             { label: 'Trang chủ', href: '/' },
             { label: 'Hoạt động', href: '/hoat-dong' },
+            { label: 'Giáo Lý', href: '/hoat-dong?category=giao-ly' },
+            { label: 'Câu Chuyện', href: '/hoat-dong?category=cau-chuyen-thieu-nhi' },
+            { label: 'Tài Liệu', href: '/hoat-dong?category=tai-lieu-huynh-truong' },
             { label: 'Đố vui', href: '/quizzes' },
             { label: 'Dashboard', href: '/dashboard' }
         ] satisfies NavItem[],

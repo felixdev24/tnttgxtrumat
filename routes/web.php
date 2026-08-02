@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\CalendarController;
 use App\Http\Controllers\Dashboard\DashboardStatsController;
 use App\Http\Controllers\Dashboard\DoanSinhController;
 use App\Http\Controllers\Dashboard\HuynhTruongController;
+use App\Http\Controllers\Dashboard\LeaderboardController;
 use App\Http\Controllers\Dashboard\PostCategoryController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\ProfileController;
@@ -31,10 +32,19 @@ Route::get('/', function () {
         ->orderBy('event_date')
         ->get();
 
+    $welcomeSettings = \App\Models\Setting::whereIn('key', [
+        'welcome_hero_image',
+        'stat_doan_sinh',
+        'stat_huynh_truong',
+        'stat_lop_giao_ly',
+        'stat_hoat_dong'
+    ])->pluck('value', 'key')->toArray();
+
     return Inertia::render('Welcome', [
         'title' => 'Trang chủ',
         'posts' => $posts,
         'calendarEvents' => $calendarEvents,
+        'welcomeSettings' => $welcomeSettings,
     ]);
 })->name('home');
 
@@ -126,6 +136,9 @@ Route::middleware(['auth', 'huynh_truong'])->prefix('dashboard')->group(function
     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('dashboard.attendance.check-in');
     Route::post('/attendance/{session}/manual', [AttendanceController::class, 'manualCheckIn'])->name('dashboard.attendance.manual-check-in');
     Route::get('/attendance/{session}/export', [AttendanceController::class, 'export'])->name('dashboard.attendance.export');
+
+    // Bảng xếp hạng điểm
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('dashboard.leaderboard.index');
 });
 
 Route::fallback(function () {

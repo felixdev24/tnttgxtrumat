@@ -5,11 +5,13 @@
     interface AttendanceSession {
         id: number;
         title: string;
-        tntt_class_id: number;
+        session_type: 'giao_ly' | 'sinh_hoat';
+        tntt_class_id: number | null;
         tntt_class?: { name: string };
         session_date: string;
         notes: string | null;
         status: 'upcoming' | 'in_progress' | 'completed';
+        points_per_attendance: number;
         total_records: number;
         present_records: number;
     }
@@ -25,8 +27,10 @@
     const form = useForm({
         id: null as number | null,
         title: '',
+        session_type: 'giao_ly' as 'giao_ly' | 'sinh_hoat',
         session_date: '',
         tntt_class_id: '',
+        points_per_attendance: 1,
         notes: '',
         status: 'upcoming' as 'upcoming' | 'in_progress' | 'completed',
     });
@@ -40,6 +44,8 @@
         form.reset();
         form.id = null;
         form.session_date = new Date().toISOString().split('T')[0];
+        form.session_type = 'giao_ly';
+        form.points_per_attendance = 1;
         showModal = true;
     }
 
@@ -48,10 +54,12 @@
         form.reset();
         form.id = session.id;
         form.title = session.title;
+        form.session_type = session.session_type;
         form.session_date = session.session_date.split('T')[0];
-        form.tntt_class_id = session.tntt_class_id;
+        form.tntt_class_id = session.tntt_class_id ?? '';
         form.notes = session.notes || '';
         form.status = session.status;
+        form.points_per_attendance = session.points_per_attendance ?? 0;
         showModal = true;
     }
 
@@ -83,13 +91,13 @@
         }
     }
 
-    const statusLabels = {
+    const statusLabels: Record<string, string> = {
         upcoming: 'Sắp tới',
         in_progress: 'Đang diễn ra',
         completed: 'Hoàn tất',
     };
 
-    const statusColors = {
+    const statusColors: Record<string, string> = {
         upcoming: 'bg-amber-100 text-amber-800 border-amber-200',
         in_progress: 'bg-blue-100 text-blue-800 border-blue-200',
         completed: 'bg-emerald-100 text-emerald-800 border-emerald-200',
@@ -209,10 +217,23 @@
                                     <Link href={`/dashboard/attendance/${session.id}`} class="font-bold text-primary hover:underline text-[16px] block">
                                         {session.title}
                                     </Link>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container">
-                                            Lớp: {session.tntt_class?.name || 'Không rõ'}
-                                        </span>
+                                    <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                        <!-- Session type badge -->
+                                        {#if session.session_type === 'sinh_hoat'}
+                                            <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-700">
+                                                🎉 Sinh hoạt
+                                            </span>
+                                        {:else}
+                                            <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container">
+                                                📚 Lớp: {session.tntt_class?.name || 'Không rõ'}
+                                            </span>
+                                        {/if}
+                                        <!-- Points badge -->
+                                        {#if session.points_per_attendance > 0}
+                                            <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-700">
+                                                ⭐ +{session.points_per_attendance} điểm
+                                            </span>
+                                        {/if}
                                         {#if session.notes}
                                             <span class="text-xs text-outline-variant truncate max-w-xs">{session.notes}</span>
                                         {/if}
@@ -300,8 +321,9 @@
 </DashboardLayout>
 
 {#if showModal}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="fixed inset-0 bg-zinc-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] overflow-y-auto">
             <div class="px-6 py-4 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-lowest">
                 <h2 class="font-title-lg text-headline-sm text-primary">
                     {isEditing ? 'Cập nhật phiên' : 'Tạo phiên điểm danh'}
@@ -313,8 +335,35 @@
             
             <div class="p-6">
                 <form onsubmit={(e) => { e.preventDefault(); submitForm(); }} class="space-y-4">
+                    <!-- Session type toggle (only when creating) -->
+                    {#if !isEditing}
+                        <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-2">Loại phiên <span class="text-error">*</span></label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button
+                                    type="button"
+                                    onclick={() => form.session_type = 'giao_ly'}
+                                    class="py-3 px-4 rounded-xl border-2 transition-all text-left {form.session_type === 'giao_ly' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'}"
+                                >
+                                    <div class="text-xl mb-1">📚</div>
+                                    <div class="font-bold text-sm">Giáo lý</div>
+                                    <div class="text-xs opacity-70">Điểm danh theo lớp</div>
+                                </button>
+                                <button
+                                    type="button"
+                                    onclick={() => form.session_type = 'sinh_hoat'}
+                                    class="py-3 px-4 rounded-xl border-2 transition-all text-left {form.session_type === 'sinh_hoat' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'}"
+                                >
+                                    <div class="text-xl mb-1">🎉</div>
+                                    <div class="font-bold text-sm">Sinh hoạt</div>
+                                    <div class="text-xs opacity-70">Tất cả Đoàn sinh</div>
+                                </button>
+                            </div>
+                        </div>
+                    {/if}
+
                     <div>
-                        <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Tên buổi sinh hoạt <span class="text-error">*</span></label>
+                        <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Tên buổi <span class="text-error">*</span></label>
                         <input type="text" bind:value={form.title} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
                         {#if form.errors.title}<p class="text-xs text-error mt-1">{form.errors.title}</p>{/if}
                     </div>
@@ -326,9 +375,18 @@
                             {#if form.errors.session_date}<p class="text-xs text-error mt-1">{form.errors.session_date}</p>{/if}
                         </div>
                         <div>
+                            <label class="block text-sm font-label-bold text-on-surface-variant mb-1">⭐ Điểm khi có mặt</label>
+                            <input type="number" min="0" max="100" bind:value={form.points_per_attendance} class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                            {#if form.errors.points_per_attendance}<p class="text-xs text-error mt-1">{form.errors.points_per_attendance}</p>{/if}
+                        </div>
+                    </div>
+
+                    <!-- Class selection: only for giao_ly -->
+                    {#if form.session_type === 'giao_ly'}
+                        <div>
                             <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Lớp <span class="text-error">*</span></label>
                             {#if isEditing}
-                                <input type="text" value={classes.find(c => c.id === form.tntt_class_id)?.name || ''} disabled class="w-full px-4 py-2 bg-surface-container-high rounded-xl border-none outline-none text-outline-variant" />
+                                <input type="text" value={classes.find(c => c.id == form.tntt_class_id)?.name || ''} disabled class="w-full px-4 py-2 bg-surface-container-high rounded-xl border-none outline-none text-outline-variant" />
                             {:else}
                                 <select bind:value={form.tntt_class_id} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
                                     <option value="" disabled>Chọn lớp điểm danh...</option>
@@ -339,7 +397,14 @@
                             {/if}
                             {#if form.errors.tntt_class_id}<p class="text-xs text-error mt-1">{form.errors.tntt_class_id}</p>{/if}
                         </div>
-                    </div>
+                    {:else}
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-200 dark:border-purple-900/40">
+                            <p class="text-sm text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">groups</span>
+                                Phiên sinh hoạt sẽ bao gồm <strong>tất cả Đoàn sinh</strong> trong hệ thống.
+                            </p>
+                        </div>
+                    {/if}
 
                     {#if isEditing}
                         <div>
@@ -347,14 +412,20 @@
                             <select bind:value={form.status} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
                                 <option value="upcoming">Sắp tới</option>
                                 <option value="in_progress">Đang diễn ra</option>
-                                <option value="completed">Hoàn tất</option>
+                                <option value="completed">Hoàn tất (tự động cộng điểm)</option>
                             </select>
+                            {#if form.status === 'completed' && form.points_per_attendance > 0}
+                                <p class="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">info</span>
+                                    Hệ thống sẽ tự động cộng {form.points_per_attendance} điểm cho những ai có mặt.
+                                </p>
+                            {/if}
                         </div>
                     {/if}
 
                     <div>
                         <label class="block text-sm font-label-bold text-on-surface-variant mb-1">Ghi chú</label>
-                        <textarea bind:value={form.notes} rows="3" class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+                        <textarea bind:value={form.notes} rows="2" class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
                     </div>
                 </form>
             </div>

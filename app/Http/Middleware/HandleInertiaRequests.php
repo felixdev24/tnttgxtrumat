@@ -35,6 +35,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $globalSettings = \App\Models\Setting::whereIn('key', [
+            'footer_link_giao_xu', 
+            'footer_link_facebook', 
+            'footer_link_lien_he', 
+            'footer_link_tai_lieu',
+            'academic_year'
+        ])->pluck('value', 'key')->toArray();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -42,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'is_super_admin' => $request->user() ? $request->user()->isSuperAdmin() : false,
             ],
+            'global_settings' => $globalSettings,
         ];
     }
 }

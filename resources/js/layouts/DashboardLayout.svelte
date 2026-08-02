@@ -85,6 +85,36 @@
                     >
                     <span class="font-title-md text-[16px]">Đoàn Sinh</span>
                 </Link>
+
+                <Link
+                    href="/dashboard/posts"
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url === '/dashboard/posts'
+                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
+                >
+                    <span class="material-symbols-outlined">article</span>
+                    <span class="font-title-md text-[16px]">Bài Viết</span>
+                </Link>
+                <div class="ml-10 flex flex-col gap-1 border-l-2 border-surface-variant pl-4 py-1">
+                    <Link
+                        href="/dashboard/posts?category=giao-ly"
+                        class="text-sm transition-all {page.url.includes('category=giao-ly') ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'}"
+                    >
+                        Giáo Lý
+                    </Link>
+                    <Link
+                        href="/dashboard/posts?category=cau-chuyen-thieu-nhi"
+                        class="text-sm transition-all {page.url.includes('category=cau-chuyen-thieu-nhi') ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'}"
+                    >
+                        Câu Chuyện Thiếu Nhi
+                    </Link>
+                    <Link
+                        href="/dashboard/posts?category=tai-lieu-huynh-truong"
+                        class="text-sm transition-all {page.url.includes('category=tai-lieu-huynh-truong') ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'}"
+                    >
+                        Tài Liệu Huynh Trưởng
+                    </Link>
+                </div>
                 {#if (page.props as any).auth?.is_super_admin}
                     <Link
                         href="/dashboard/huynh-truong"
@@ -187,6 +217,24 @@
                     <span class="material-symbols-outlined">calendar_month</span
                     >
                     <span class="font-title-md text-[16px]">Lịch Phụng Vụ</span>
+                </Link>
+                <Link
+                    href="/dashboard/leaderboard"
+                    class="flex items-center gap-stack-md p-stack-md rounded-xl transition-all {page.url.startsWith(
+                        '/dashboard/leaderboard',
+                    )
+                        ? 'bg-primary-container/30 text-primary font-bold shadow-sm'
+                        : 'text-on-surface-variant hover:bg-surface-container-high'}"
+                >
+                    <span
+                        class="material-symbols-outlined"
+                        style="font-variation-settings: 'FILL' {page.url.startsWith(
+                            '/dashboard/leaderboard',
+                        )
+                            ? '1'
+                            : '0'};">emoji_events</span
+                    >
+                    <span class="font-title-md text-[16px]">Bảng Xếp Hạng</span>
                 </Link>
             </nav>
 

@@ -71,7 +71,7 @@
         form.id = ds.id;
         form.name = ds.name;
         form.username = ds.username;
-        form.tntt_class_id = ds.tntt_class_id || '';
+        form.tntt_class_id = ds.tntt_class_id ? String(ds.tntt_class_id) : '';
         form.branch = ds.branch || '';
         form.dob = ds.dob ? ds.dob.split('T')[0] : '';
         form.phone = ds.phone || '';
@@ -137,7 +137,7 @@
     }
 
     async function downloadCard() {
-        const cardEl = document.getElementById('id-card-container');
+        const cardEl = document.getElementById('id-cards-wrapper');
         if (!cardEl) return;
 
         try {
@@ -232,6 +232,7 @@
                             <th class="p-4 border-b border-outline-variant/10">Họ & Tên</th>
                             <th class="p-4 border-b border-outline-variant/10">Lớp / Ngành</th>
                             <th class="p-4 border-b border-outline-variant/10">SĐT</th>
+                            <th class="p-4 border-b border-outline-variant/10 text-center">Điểm</th>
                             <th class="p-4 border-b border-outline-variant/10 text-center">Thẻ</th>
                             <th class="p-4 border-b border-outline-variant/10 text-right">Thao tác</th>
                         </tr>
@@ -248,12 +249,15 @@
                                     <div class="text-xs text-outline">{ds.tntt_class ? ds.tntt_class.branch : (ds.branch || '')}</div>
                                 </td>
                                 <td class="p-4 text-on-surface-variant">
-                                    {#if ds.phone}
-                                        <div>📞 {ds.phone}</div>
-                                    {/if}
+                                    <div class="text-sm">{ds.phone || '-'}</div>
                                     {#if ds.parent_phone}
-                                        <div class="text-xs text-outline mt-0.5">Phụ huynh: {ds.parent_phone}</div>
+                                        <div class="text-xs text-outline mt-1" title="SĐT Phụ huynh">PH: {ds.parent_phone}</div>
                                     {/if}
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="font-bold text-primary px-2 py-1 bg-primary-container rounded-md">
+                                        {ds.point_transactions_sum_points ?? 0}
+                                    </span>
                                 </td>
                                 <td class="p-4 text-center">
                                     <button 
@@ -359,7 +363,7 @@
                             <select bind:value={form.tntt_class_id} required class="w-full px-4 py-2 bg-surface-container rounded-xl border-none outline-none focus:ring-2 focus:ring-primary/20">
                                 <option value="" disabled>Chọn lớp...</option>
                                 {#each classes as cls}
-                                    <option value={cls.id}>{cls.name}</option>
+                                    <option value={String(cls.id)}>{cls.name}</option>
                                 {/each}
                             </select>
                             {#if form.errors.tntt_class_id}<p class="text-xs text-error mt-1">{form.errors.tntt_class_id}</p>{/if}
@@ -413,69 +417,109 @@
 <!-- Card Modal (Thẻ Thiếu Nhi) -->
 {#if showQrModal && currentQr}
     <div class="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-md overflow-hidden flex flex-col p-6 items-center">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col p-6 items-center">
             <h2 class="font-title-lg text-headline-sm text-[#004a99] mb-4">Thẻ Thiếu Nhi Thánh Thể</h2>
 
-            <!-- ID Card -->
-            <div id="id-card-container" class="id-card-container bg-white flex" style="font-family: 'Inter', system-ui, sans-serif;">
-                <!-- Main Content -->
-                <main class="flex-grow p-4 flex flex-col h-full relative">
-                    <div class="flex flex-col h-full">
-                        <!-- QR Code Area -->
-                        <section class="flex justify-center mb-3">
-                            <div class="w-full aspect-[54/45] flex items-center justify-center rounded-xl overflow-hidden shadow-inner bg-gray-50 border border-gray-100">
-                                <img src={currentQr.png} alt="QR Code" class="w-3/4 h-3/4 object-contain" />
-                            </div>
-                        </section>
-                        <!-- Member Info Fields -->
-                        <section class="space-y-2 flex-grow">
-                            <div class="space-y-0.5">
-                                <p class="card-label-text uppercase">Họ và Tên</p>
-                                <div class="card-info-field h-7 flex items-center">
-                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.name}</span>
+            <!-- ID Cards Wrapper -->
+            <div id="id-cards-wrapper" class="flex flex-col md:flex-row gap-6 p-4 overflow-x-auto w-full items-center md:justify-center bg-white">
+                <!-- Front Card -->
+                <div class="id-card-container bg-white flex shrink-0" style="font-family: 'Inter', system-ui, sans-serif;">
+                    <!-- Main Content -->
+                    <main class="flex-grow p-4 flex flex-col h-full relative">
+                        <div class="flex flex-col h-full">
+                            <!-- QR Code Area -->
+                            <section class="flex justify-center mb-3">
+                                <div class="w-full aspect-[54/45] flex items-center justify-center rounded-xl overflow-hidden shadow-inner bg-gray-50 border border-gray-100">
+                                    <img src={currentQr.png} alt="QR Code" class="w-3/4 h-3/4 object-contain" />
                                 </div>
-                            </div>
-                            <div class="space-y-0.5">
-                                <p class="card-label-text uppercase">Mã số TN</p>
-                                <div class="card-info-field h-7 flex items-center">
-                                    <span class="text-[11px] font-semibold text-slate-800">{currentQr.username}</span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
+                            </section>
+                            <!-- Member Info Fields -->
+                            <section class="space-y-2 flex-grow">
                                 <div class="space-y-0.5">
-                                    <p class="card-label-text uppercase">Ngành</p>
+                                    <p class="card-label-text uppercase">Họ và Tên</p>
                                     <div class="card-info-field h-7 flex items-center">
-                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.branch || currentQr.tntt_class_name}</span>
+                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.name}</span>
                                     </div>
                                 </div>
                                 <div class="space-y-0.5">
-                                    <p class="card-label-text uppercase">SĐT Phụ Huynh</p>
+                                    <p class="card-label-text uppercase">Mã số TN</p>
                                     <div class="card-info-field h-7 flex items-center">
-                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.parent_phone || 'N/A'}</span>
+                                        <span class="text-[11px] font-semibold text-slate-800">{currentQr.username}</span>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-                        <!-- Footer -->
-                        <footer class="mt-4 flex items-end justify-between">
-                            <div class="flex-shrink-0">
-                                <h2 class="text-[14px] font-extrabold text-[#004a99] uppercase leading-tight tracking-tighter">Thiếu Nhi<br/>Thánh Thể</h2>
-                                <div class="mt-1 inline-block px-1.5 py-0.5 bg-[#004a99] text-white rounded text-[7px] font-bold tracking-wider uppercase">
-                                    NIÊN KHÓA {currentQr.academic_year || '2024-2025'}
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="space-y-0.5">
+                                        <p class="card-label-text uppercase">Ngành</p>
+                                        <div class="card-info-field h-7 flex items-center">
+                                            <span class="text-[11px] font-semibold text-slate-800">{currentQr.branch || currentQr.tntt_class_name}</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-0.5">
+                                        <p class="card-label-text uppercase">SĐT Phụ Huynh</p>
+                                        <div class="card-info-field h-7 flex items-center">
+                                            <span class="text-[11px] font-semibold text-slate-800">{currentQr.parent_phone || 'N/A'}</span>
+                                        </div>
+                                    </div>
                                 </div>
+                            </section>
+                            <!-- Footer -->
+                            <footer class="mt-4 flex items-end justify-between">
+                                <div class="flex-shrink-0">
+                                    <h2 class="text-[14px] font-extrabold text-[#004a99] uppercase leading-tight tracking-tighter">Thiếu Nhi<br/>Thánh Thể</h2>
+                                    <div class="mt-1 inline-block px-1.5 py-0.5 bg-[#004a99] text-white rounded text-[7px] font-bold tracking-wider uppercase">
+                                        NIÊN KHÓA {currentQr.academic_year || '2024-2025'}
+                                    </div>
+                                </div>
+                                <div class="w-12 h-12 relative flex items-center justify-center">
+                                    <img alt="Logo TNTT" class="w-full h-full object-contain" src="/apple-touch-icon.png" />
+                                </div>
+                            </footer>
+                        </div>
+                    </main>
+                    <!-- Sidebar -->
+                    <aside class="card-sidebar flex items-center justify-center py-6">
+                        <h1 class="card-vertical-text text-white text-[18px] font-extrabold whitespace-nowrap uppercase">
+                            GIÁO XỨ TRÙ MẬT
+                        </h1>
+                    </aside>
+                </div>
+
+                <!-- Back Card -->
+                <div class="id-card-container bg-white flex flex-col shrink-0 relative" style="font-family: 'Inter', system-ui, sans-serif;">
+                    <!-- Top accent -->
+                    <div class="h-8 w-full bg-[#004a99]"></div>
+                    <div class="flex-grow p-4 flex flex-col">
+                        <div class="text-center mb-3">
+                            <h2 class="text-[#004a99] font-black text-lg uppercase tracking-tight">Thẻ Đoàn Sinh</h2>
+                            <p class="text-[11px] font-bold text-gray-600 mt-1">{currentQr.name}</p>
+                        </div>
+                        
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-[#f0f5fa] p-3 rounded-lg border border-[#cce0ff]">
+                                <p class="text-[9px] font-bold text-[#004a99] mb-1">TÀI KHOẢN HỆ THỐNG</p>
+                                <p class="text-[11px] text-slate-700"><span class="font-bold w-16 inline-block">Mã số:</span> {currentQr.username}</p>
+                                <p class="text-[11px] text-slate-700"><span class="font-bold w-16 inline-block">Mật khẩu:</span> password</p>
                             </div>
-                            <div class="w-12 h-12 relative flex items-center justify-center">
-                                <img alt="Logo TNTT" class="w-full h-full object-contain" src="/apple-touch-icon.png" />
+                            
+                            <div>
+                                <p class="text-[10px] font-bold text-[#004a99] mb-1.5 uppercase">Nội quy sử dụng thẻ:</p>
+                                <ul class="text-[9px] text-gray-700 space-y-1.5 list-disc pl-3 leading-snug">
+                                    <li>Đeo thẻ trong tất cả các buổi sinh hoạt, thánh lễ và học giáo lý.</li>
+                                    <li>Bảo quản thẻ cẩn thận, không làm xước mã QR.</li>
+                                    <li>Sử dụng thẻ để điểm danh và tích lũy điểm.</li>
+                                    <li>Nếu mất thẻ, báo ngay cho Huynh Trưởng.</li>
+                                </ul>
                             </div>
-                        </footer>
+                        </div>
+                        
+                        <div class="mt-auto text-center border-t border-gray-100 pt-3 flex flex-col items-center justify-center">
+                            <div class="w-8 h-8 opacity-20 mb-1">
+                                <span class="material-symbols-outlined text-[32px]">qr_code_scanner</span>
+                            </div>
+                            <p class="text-[8.5px] text-gray-500 font-medium">Đăng nhập tại: https://tnttgxtrumat.com</p>
+                        </div>
                     </div>
-                </main>
-                <!-- Sidebar -->
-                <aside class="card-sidebar flex items-center justify-center py-6">
-                    <h1 class="card-vertical-text text-white text-[18px] font-extrabold whitespace-nowrap uppercase">
-                        GIÁO XỨ TRÙ MẬT
-                    </h1>
-                </aside>
+                </div>
             </div>
 
             <!-- Actions -->

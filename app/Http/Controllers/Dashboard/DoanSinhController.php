@@ -16,7 +16,7 @@ class DoanSinhController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::doanSinh()->with('tnttClass');
+        $query = User::doanSinh()->with('tnttClass')->withSum('pointTransactions', 'points');
 
         if ($request->filled('tntt_class_id')) {
             $query->where('tntt_class_id', $request->tntt_class_id);
