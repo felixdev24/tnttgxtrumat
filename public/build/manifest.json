@@ -90,7 +90,7 @@
     "isDynamicEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-DK_jsNNG.css",
+    "file": "assets/app-CvqDTPYG.css",
     "name": "app",
     "names": [
       "app.css"
@@ -99,7 +99,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-DV-RXbHH.js",
+    "file": "assets/app-D8w9JW7g.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -134,7 +134,7 @@
       "resources/js/pages/quizzes/Play.svelte"
     ],
     "css": [
-      "assets/app-kedI1z7g.css"
+      "assets/app-zLDawqYM.css"
     ]
   },
   "resources/js/pages/ComingSoon.svelte": {
