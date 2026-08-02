@@ -33,6 +33,7 @@
             totalDoanSinh: number;
             growthPercent: number;
             postsThisMonth: number;
+            totalPostViews: number;
             upcomingEvents: number;
             attendanceRate: number;
         };
@@ -134,9 +135,9 @@
             </div>
 
             <!-- Summary Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Total Students -->
-                <div class="bg-primary text-white p-6 rounded-2xl stat-card-shadow flex flex-col justify-between relative overflow-hidden h-32">
+                <div class="bg-primary text-white p-5 rounded-2xl stat-card-shadow flex flex-col justify-between relative overflow-hidden h-32">
                     <div class="z-10">
                         <p class="text-xs font-bold uppercase tracking-wide opacity-80">Tổng Đoàn sinh</p>
                         <h2 class="text-3xl font-bold mt-1">{summary.totalDoanSinh}</h2>
@@ -150,7 +151,7 @@
                 </div>
 
                 <!-- Monthly Posts -->
-                <div class="glass-card p-6 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
+                <div class="glass-card p-5 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wide text-on-surface-variant">Bài viết tháng này</p>
                         <h2 class="text-3xl font-bold text-on-surface mt-1">{summary.postsThisMonth}</h2>
@@ -163,8 +164,20 @@
                     {/if}
                 </div>
 
+                <!-- Total Post Views -->
+                <div class="glass-card p-5 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wide text-on-surface-variant">Tổng lượt xem bài</p>
+                        <h2 class="text-3xl font-bold text-on-surface mt-1">{summary.totalPostViews ?? 0}</h2>
+                    </div>
+                    <div class="flex items-center text-xs gap-1 font-medium text-emerald-600 dark:text-emerald-400">
+                        <span class="material-symbols-outlined text-sm">visibility</span>
+                        <span>Đang tăng trưởng</span>
+                    </div>
+                </div>
+
                 <!-- Upcoming Events -->
-                <div class="glass-card p-6 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
+                <div class="glass-card p-5 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wide text-on-surface-variant">Hoạt động sắp tới</p>
                         <h2 class="text-3xl font-bold text-on-surface mt-1">{summary.upcomingEvents}</h2>
@@ -178,7 +191,7 @@
                 </div>
 
                 <!-- Attendance -->
-                <div class="glass-card p-6 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
+                <div class="glass-card p-5 rounded-2xl stat-card-shadow flex flex-col justify-between h-32 border border-outline-variant/20">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wide text-on-surface-variant">Điểm danh gần nhất</p>
                         <h2 class="text-3xl font-bold text-on-surface mt-1">{summary.attendanceRate}%</h2>

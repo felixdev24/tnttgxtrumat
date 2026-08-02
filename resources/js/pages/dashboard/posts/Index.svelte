@@ -20,6 +20,7 @@
                 title: string;
                 category: string | null;
                 status: string;
+                views: number;
                 cover_image: string | null;
                 created_at: string;
                 user?: { name: string };
@@ -185,6 +186,7 @@
                                             <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Tiêu đề</th>
                                             <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Danh mục</th>
                                             <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Trạng thái</th>
+                                            <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant">Lượt xem</th>
                                             <th class="px-6 py-4 font-label-bold text-label-bold text-on-surface-variant text-right">Hành động</th>
                                         </tr>
                                     </thead>
@@ -221,6 +223,12 @@
                                                         <span class="text-[13px] font-bold {post.status === 'published' ? 'text-green-700' : ''}">
                                                             {post.status === 'published' ? 'Đã đăng' : 'Bản nháp'}
                                                         </span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-5">
+                                                    <div class="flex items-center gap-1.5 text-on-surface-variant">
+                                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                                        <span class="text-[13px] font-bold">{post.views ?? 0}</span>
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-5 text-right">

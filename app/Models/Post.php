@@ -17,6 +17,7 @@ class Post extends Model
         'content',
         'cover_image',
         'status',
+        'views',
         'category',
         'tags',
         'scheduled_at',

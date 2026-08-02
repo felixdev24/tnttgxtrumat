@@ -52,6 +52,13 @@ class PublicPostController extends Controller
             ->with('user:id,name,avatar')
             ->firstOrFail();
 
+        // Increment views with session key check
+        $viewedKey = 'viewed_post_'.$post->id;
+        if (! session()->has($viewedKey)) {
+            $post->increment('views');
+            session()->put($viewedKey, true);
+        }
+
         $meta = [
             'title' => $post->title,
             'description' => Str::limit(strip_tags($post->content), 150),

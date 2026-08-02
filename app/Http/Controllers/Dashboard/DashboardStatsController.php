@@ -33,6 +33,8 @@ class DashboardStatsController extends Controller
             ->whereMonth('created_at', $now->month)
             ->count();
 
+        $totalPostViews = Post::sum('views');
+
         $upcomingEvents = CalendarEvent::whereDate('event_date', '>=', $now->toDateString())
             ->whereDate('event_date', '<=', $now->copy()->addDays(30)->toDateString())
             ->count();
@@ -95,6 +97,7 @@ class DashboardStatsController extends Controller
                 'totalDoanSinh' => $totalDoanSinh,
                 'growthPercent' => $growthPercent,
                 'postsThisMonth' => $postsThisMonth,
+                'totalPostViews' => $totalPostViews,
                 'upcomingEvents' => $upcomingEvents,
                 'attendanceRate' => $attendanceRate,
             ],

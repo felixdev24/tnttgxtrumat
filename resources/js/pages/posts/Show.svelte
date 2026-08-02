@@ -53,9 +53,16 @@
                     {/if}
                     <div class="flex flex-col">
                         <span class="font-label-bold text-on-surface">{post.user?.name || 'Tác giả'}</span>
-                        <span class="text-[12px] flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
-                            {formatDate(post.created_at)}
+                        <span class="text-[12px] flex items-center gap-2">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                {formatDate(post.created_at)}
+                            </span>
+                            <span class="opacity-30">•</span>
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                {post.views ?? 0} lượt xem
+                            </span>
                         </span>
                     </div>
                 </div>
